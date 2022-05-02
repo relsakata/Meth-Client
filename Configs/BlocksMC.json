@@ -1,0 +1,172 @@
+{
+  "cfgname": "blocksmc",
+  "cfgdescription": "Oficial BlocksMC Config by NotThatUwU.",
+  "Modules": {
+    "AntiBot": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "TabList"
+      }
+    },
+    "Velocity": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "Cancel",
+        "Cancel C0F": false
+      }
+    },
+    "Killaura": {
+      "toggled": false,
+      "key": 19,
+      "Properties": {
+        "Mode": "Single",
+        "Switch Delay": 200.0,
+        "Sorting Mode": "Health",
+        "Attack Range": 3.2,
+        "Min Cps": 11.34,
+        "Max Cps": 12.19,
+        "AutoBlock Mode": "Fake",
+        "AutoBlock Type": "Pre",
+        "AutoBlock Range": 4.8,
+        "Player": true,
+        "Animals": false,
+        "Mobs": false,
+        "Invisible": false,
+        "Wall": true,
+        "Legit": false,
+        "Rotations": false
+      }
+    },
+    "Fly": {
+      "toggled": false,
+      "key": 33,
+      "Properties": {
+        "Mode": "Motion",
+        "Fly Speed": 0.94,
+        "Bobbing": true
+      }
+    },
+    "Speed": {
+      "toggled": false,
+      "key": 50
+    },
+    "InvMove": {
+      "toggled": true,
+      "key": 0
+    },
+    "NoSlow": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "NCP"
+      }
+    },
+    "Teams": {
+      "toggled": true,
+      "key": 0
+    },
+    "ChestStealer": {
+      "toggled": false,
+      "key": 37,
+      "Properties": {
+        "Delay": 88.0,
+        "Silent": true,
+        "Bad Items": true,
+        "Auto Close": true
+      }
+    },
+    "InvManager": {
+      "toggled": false,
+      "key": 38,
+      "Properties": {
+        "Delay": 77.0,
+        "Cleaner": true,
+        "Auto Armor": true,
+        "Inventory Only": true,
+        "Sword": true,
+        "Sort": true,
+        "Food": true,
+        "Archery": true
+      }
+    },
+    "HUD": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Watermark Style": "Myth Sense",
+        "Arraylist Style": "Old",
+        "Watermark Background": true,
+        "Arraylist Background": true,
+        "Arraylist Background Opacity": 150.0,
+        "Arraylist Color Mode": "Myth",
+        "Arraylist Color Delay": 150.0,
+        "Font": true
+      }
+    },
+    "ClickGui": {
+      "toggled": false,
+      "key": 54
+    },
+    "NameTags": {
+      "toggled": true,
+      "key": 0
+    },
+    "Animations": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "1.7",
+        "Item Scale": 1.0,
+        "Swing Duration": 1.0,
+        "Block X": 0.0,
+        "Block Y": 0.0,
+        "Block Z": 0.0,
+        "Item X": 0.0,
+        "Item Y": 0.0,
+        "Item Z": 0.0
+      }
+    },
+    "ChestESP": {
+      "toggled": true,
+      "key": 0
+    },
+    "Ambience": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "World Time": 16611.0
+      }
+    },
+    "Disabler": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "Watchdog"
+      }
+    },
+    "Scaffold": {
+      "toggled": false,
+      "key": 46,
+      "Properties": {
+        "Rotation Mode": "None",
+        "Place Mode": "Dev",
+        "Delay": 0.0,
+        "Edge": false,
+        "Keep Y": true,
+        "SafeWalk": true,
+        "Sprint Bypass": "Spoof Packet",
+        "Eagle": "None"
+      }
+    },
+    "AntiVoid": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "Jump",
+        "Distance": 4.0
+      }
+    }
+  }
+}
