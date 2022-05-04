@@ -2,74 +2,13 @@
   "cfgname": "minemora",
   "cfgdescription": "Oficial BlocksMC Config by NotThatUwU.",
   "Modules": {
-    "AntiBot": {
-      "toggled": true,
+    "§6Reload Config": {
+      "toggled": false,
       "key": 0,
       "Properties": {
-        "Mode": "TabList"
+        "Reload Local Config": true,
+        "Reload Online Config": true
       }
-    },
-    "Velocity": {
-      "toggled": true,
-      "key": 0,
-      "Properties": {
-        "Mode": "Cancel",
-        "Cancel C0F": false
-      }
-    },
-    "Killaura": {
-      "toggled": false,
-      "key": 19,
-      "Properties": {
-        "Mode": "Single",
-        "Switch Delay": 200.0,
-        "Sorting Mode": "Health",
-        "Attack Range": 3.2,
-        "Min Cps": 11.34,
-        "Max Cps": 12.19,
-        "AutoBlock Mode": "RightClick",
-        "AutoBlock Type": "Pre",
-        "AutoBlock Range": 4.8,
-        "Player": true,
-        "Animals": false,
-        "Mobs": false,
-        "Invisible": false,
-        "Wall": true,
-        "Legit": false,
-        "Rotations": false,
-        "Sprint Bypass": true
-      }
-    },
-    "Fly": {
-      "toggled": false,
-      "key": 33,
-      "Properties": {
-        "Mode": "MineMora",
-        "Fly Speed": 3.0,
-        "Bobbing": true
-      }
-    },
-    "Speed": {
-      "toggled": false,
-      "key": 50,
-      "Properties": {
-        "Mode": "Strafe"
-      }
-    },
-    "InvMove": {
-      "toggled": true,
-      "key": 0
-    },
-    "NoSlow": {
-      "toggled": true,
-      "key": 0,
-      "Properties": {
-        "Mode": "NCP"
-      }
-    },
-    "Teams": {
-      "toggled": true,
-      "key": 0
     },
     "ChestStealer": {
       "toggled": false,
@@ -79,6 +18,14 @@
         "Silent": true,
         "Bad Items": true,
         "Auto Close": true
+      }
+    },
+    "TargetStrafe": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Radius": 1.22,
+        "Hold Space": false
       }
     },
     "InvManager": {
@@ -95,28 +42,6 @@
         "Archery": true
       }
     },
-    "HUD": {
-      "toggled": true,
-      "key": 0,
-      "Properties": {
-        "Watermark Style": "Myth Sense",
-        "Arraylist Style": "Old",
-        "Watermark Background": true,
-        "Arraylist Background": true,
-        "Arraylist Background Opacity": 150.0,
-        "Arraylist Color Mode": "Myth",
-        "Arraylist Color Delay": 150.0,
-        "Font": true
-      }
-    },
-    "ClickGui": {
-      "toggled": false,
-      "key": 54
-    },
-    "NameTags": {
-      "toggled": true,
-      "key": 0
-    },
     "Animations": {
       "toggled": true,
       "key": 0,
@@ -132,7 +57,7 @@
         "Item Z": 0.0
       }
     },
-    "ChestESP": {
+    "NameTags": {
       "toggled": true,
       "key": 0
     },
@@ -143,12 +68,25 @@
         "World Time": 0.0
       }
     },
-    "Disabler": {
+    "ChestESP": {
+      "toggled": true,
+      "key": 0
+    },
+    "ClickGui": {
+      "toggled": false,
+      "key": 54
+    },
+    "AntiVoid": {
       "toggled": false,
       "key": 0,
       "Properties": {
-        "Mode": "Watchdog"
+        "Mode": "Jump",
+        "Distance": 4.0
       }
+    },
+    "InvMove": {
+      "toggled": true,
+      "key": 0
     },
     "Scaffold": {
       "toggled": false,
@@ -166,12 +104,102 @@
         "Eagle": "None"
       }
     },
-    "AntiVoid": {
+    "Velocity": {
       "toggled": true,
       "key": 0,
       "Properties": {
-        "Mode": "Blink",
-        "Distance": 4.0
+        "Mode": "Cancel",
+        "Cancel C0F": false
+      }
+    },
+    "Criticals": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "NCP",
+        "Critical Delay": 688.0
+      }
+    },
+    "Disabler": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "Watchdog"
+      }
+    },
+    "AntiBot": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "TabList"
+      }
+    },
+    "Killaura": {
+      "toggled": false,
+      "key": 19,
+      "Properties": {
+        "Mode": "Single",
+        "Switch Delay": 200.0,
+        "Sorting Mode": "Health",
+        "Attack Range": 3.33,
+        "Min Cps": 11.34,
+        "Max Cps": 12.19,
+        "AutoBlock Mode": "Fake",
+        "AutoBlock Type": "Pre",
+        "AutoBlock Range": 4.8,
+        "Player": true,
+        "Animals": false,
+        "Mobs": false,
+        "Invisible": false,
+        "Wall": true,
+        "Legit": false,
+        "Rotations": false,
+        "Sprint Bypass": true
+      }
+    },
+    "NoSlow": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "NCP"
+      }
+    },
+    "Teams": {
+      "toggled": true,
+      "key": 0
+    },
+    "Speed": {
+      "toggled": false,
+      "key": 50,
+      "Properties": {
+        "Mode": "NCP"
+      }
+    },
+    "Sprint": {
+      "toggled": true,
+      "key": 0
+    },
+    "HUD": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Watermark Style": "Myth Sense",
+        "Arraylist Style": "Old",
+        "Watermark Background": true,
+        "Arraylist Background": true,
+        "Arraylist Background Opacity": 31.0,
+        "Arraylist Color Mode": "Myth",
+        "Arraylist Color Delay": 155.0,
+        "Font": true
+      }
+    },
+    "Fly": {
+      "toggled": false,
+      "key": 33,
+      "Properties": {
+        "Mode": "MineMora",
+        "Fly Speed": 3.0,
+        "Bobbing": true
       }
     }
   }
