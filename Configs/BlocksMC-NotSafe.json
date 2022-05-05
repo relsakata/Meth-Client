@@ -1,6 +1,6 @@
 {
   "cfgname": "BlocksMC-NotSafe",
-  "cfgdescription": "Local",
+  "cfgdescription": "Might Autoban idk",
   "Modules": {
     "§6Reload Config": {
       "toggled": false,
