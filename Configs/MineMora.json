@@ -1,8 +1,8 @@
 {
-  "cfgname": "minemora",
-  "cfgdescription": "Oficial BlocksMC Config by NotThatUwU.",
+  "cfgname": "MineMora",
+  "cfgdescription": "Local",
   "Modules": {
-    "ยง6Reload Config": {
+    "ง6Reload Config": {
       "toggled": false,
       "key": 0,
       "Properties": {
@@ -97,7 +97,7 @@
         "Delay": 0.0,
         "Edge": false,
         "Keep Y": true,
-        "Tower": true,
+        "Tower": false,
         "SafeWalk": true,
         "Tower Bypass": "NCP",
         "Sprint Bypass": "Spoof Packet",
@@ -113,11 +113,11 @@
       }
     },
     "Criticals": {
-      "toggled": true,
+      "toggled": false,
       "key": 0,
       "Properties": {
         "Mode": "NCP",
-        "Critical Delay": 688.0
+        "Critical Delay": 288.0
       }
     },
     "Disabler": {
@@ -141,12 +141,12 @@
         "Mode": "Single",
         "Switch Delay": 200.0,
         "Sorting Mode": "Health",
-        "Attack Range": 3.33,
+        "Attack Range": 4.53,
         "Min Cps": 11.34,
         "Max Cps": 12.19,
-        "AutoBlock Mode": "Fake",
-        "AutoBlock Type": "Pre",
-        "AutoBlock Range": 4.8,
+        "AutoBlock Mode": "Normal",
+        "AutoBlock Type": "Post",
+        "AutoBlock Range": 7.0,
         "Player": true,
         "Animals": false,
         "Mobs": false,
@@ -176,13 +176,14 @@
       }
     },
     "Sprint": {
-      "toggled": true,
+      "toggled": false,
       "key": 0
     },
     "HUD": {
       "toggled": true,
       "key": 0,
       "Properties": {
+        "Client Name": "\u0026duwuware ",
         "Watermark Style": "Myth Sense",
         "Arraylist Style": "Old",
         "Watermark Background": true,
@@ -190,7 +191,8 @@
         "Arraylist Background Opacity": 31.0,
         "Arraylist Color Mode": "Myth",
         "Arraylist Color Delay": 155.0,
-        "Font": true
+        "Font": true,
+        "Test": -1
       }
     },
     "Fly": {
