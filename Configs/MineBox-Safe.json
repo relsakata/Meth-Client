@@ -1,0 +1,211 @@
+{
+  "cfgname": "MineBox-Safe",
+  "cfgdescription": "Local",
+  "date": "2022-05-14",
+  "Modules": {
+    "§6Reload Config": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Reload Local Config": true,
+        "Reload Online Config": true
+      }
+    },
+    "ChestStealer": {
+      "toggled": false,
+      "key": 37,
+      "Properties": {
+        "Delay": 77.0,
+        "Silent": true,
+        "Bad Items": true,
+        "Auto Close": true
+      }
+    },
+    "TargetStrafe": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Radius": 1.22,
+        "Hold Space": false
+      }
+    },
+    "InvManager": {
+      "toggled": false,
+      "key": 38,
+      "Properties": {
+        "Delay": 77.0,
+        "Cleaner": true,
+        "Auto Armor": true,
+        "Inventory Only": true,
+        "Sword": true,
+        "Sort": true,
+        "Food": true,
+        "Archery": true
+      }
+    },
+    "Animations": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "1.7",
+        "Item Scale": 1.0,
+        "Swing Duration": 1.0,
+        "Block X": 0.0,
+        "Block Y": 0.0,
+        "Block Z": 0.0,
+        "Item X": 0.0,
+        "Item Y": 0.0,
+        "Item Z": 0.0
+      }
+    },
+    "NameTags": {
+      "toggled": true,
+      "key": 0
+    },
+    "Ambience": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "World Time": 16611.0
+      }
+    },
+    "ChestESP": {
+      "toggled": true,
+      "key": 0
+    },
+    "ClickGui": {
+      "toggled": false,
+      "key": 54
+    },
+    "AntiVoid": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "Blink",
+        "Distance": 4.0
+      }
+    },
+    "InvMove": {
+      "toggled": false,
+      "key": 0
+    },
+    "Scaffold": {
+      "toggled": false,
+      "key": 46,
+      "Properties": {
+        "Rotation Mode": "Free",
+        "Place Mode": "Dev",
+        "Delay": 0.0,
+        "Edge": false,
+        "Keep Y": false,
+        "Tower": false,
+        "SafeWalk": true,
+        "Tower Bypass": "NCP",
+        "Sprint Bypass": "Spoof Packet",
+        "Eagle": "Vulcan"
+      }
+    },
+    "Velocity": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "Cancel",
+        "Cancel C0F": false
+      }
+    },
+    "Criticals": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "NCP",
+        "Critical Delay": 688.0
+      }
+    },
+    "Disabler": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "Minebox"
+      }
+    },
+    "AntiBot": {
+      "toggled": false,
+      "key": 0,
+      "Properties": {
+        "Mode": "TabList"
+      }
+    },
+    "Killaura": {
+      "toggled": false,
+      "key": 19,
+      "Properties": {
+        "Mode": "Single",
+        "Switch Delay": 200.0,
+        "Sorting Mode": "Health",
+        "Attack Range": 4.73,
+        "Min Cps": 14.51,
+        "Max Cps": 15.36,
+        "AutoBlock Mode": "Fake",
+        "AutoBlock Type": "Pre",
+        "AutoBlock Range": 7.0,
+        "Player": true,
+        "Animals": false,
+        "Mobs": false,
+        "Invisible": false,
+        "Wall": true,
+        "Legit": true,
+        "Rotations": true,
+        "Sprint Bypass": true,
+        "Only Air": true,
+        "Auto Jump": true
+      }
+    },
+    "NoSlow": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Mode": "Vanilla"
+      }
+    },
+    "Teams": {
+      "toggled": false,
+      "key": 0
+    },
+    "Speed": {
+      "toggled": false,
+      "key": 50,
+      "Properties": {
+        "Mode": "Strafe"
+      }
+    },
+    "Sprint": {
+      "toggled": false,
+      "key": 0
+    },
+    "HUD": {
+      "toggled": true,
+      "key": 0,
+      "Properties": {
+        "Watermark Style": "Myth Sense",
+        "Arraylist Style": "Old",
+        "Client Name": "Myth",
+        "Watermark Background": true,
+        "Arraylist Background": true,
+        "Arraylist Background Opacity": 150.0,
+        "Arraylist Color Mode": "Myth",
+        "Arraylist Color Delay": 211.0,
+        "Font": true,
+        "Test": -1
+      }
+    },
+    "Fly": {
+      "toggled": false,
+      "key": 33,
+      "Properties": {
+        "Mode": "Motion",
+        "Fly Speed": 3.0,
+        "Bobbing": true
+      }
+    }
+  }
+}
