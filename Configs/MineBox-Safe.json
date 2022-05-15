@@ -3,7 +3,7 @@
   "cfgdescription": "Local",
   "date": "2022-05-14",
   "Modules": {
-    "ง6Reload Config": {
+    "ยง6Reload Config": {
       "toggled": false,
       "key": 0,
       "Properties": {
@@ -155,7 +155,7 @@
         "Wall": true,
         "Legit": true,
         "Rotations": true,
-        "Sprint Bypass": true,
+        "Sprint Bypass": false,
         "Only Air": true,
         "Auto Jump": true
       }
