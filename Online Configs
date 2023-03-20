@@ -573,7 +573,7 @@ function Library:Init(InitData)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIPadding
 				Section["1e"] = Instance.new("UIPadding", Section["1d"]);
-				Section["1e"]["PaddingTop"] = UDim.new(0, 10);
+				Section["1e"]["PaddingTop"] = UDim.new(0, 0);
 				Section["1e"]["PaddingRight"] = UDim.new(0, 5);
 				Section["1e"]["PaddingBottom"] = UDim.new(0, 5);
 				Section["1e"]["PaddingLeft"] = UDim.new(0, 5);
@@ -610,7 +610,7 @@ function Library:Init(InitData)
 				Section["1ee"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 				Section["1ee"]["Size"] = UDim2.new(0, 75, 0, 15);
 				Section["1ee"]["Text"] = Name;
-				Section["1ee"]["Position"] = UDim2.new(0.5, 0, 0, -7)
+				Section["1ee"]["Position"] = UDim2.new(0.5, 0, 0, 0)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Title.TextLabel.UICorner
 				Section["1ff"] = Instance.new("UICorner", Section["1ee"]);
