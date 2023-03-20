@@ -621,7 +621,7 @@ function Library:Init(InitData)
 			Section["1f"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 				Section["17"].Size = UDim2.new(0.99, 0, 0, Section["1f"].AbsoluteContentSize.Y + (Section["1f"].Padding.Offset+15))
 			end)
-				
+			Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
 			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
 				Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
 			end)
