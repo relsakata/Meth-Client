@@ -347,7 +347,7 @@ function Library:Init(InitData)
 		end)
 	end
 
-	Drag(GUI["2"], 0.3)
+	Drag(GUI["4"], 0.3)
 
 	GUI["d"].CanvasSize = UDim2.new(0, GUI["e"].AbsoluteContentSize.X + 250, 0, 0)
 
@@ -844,7 +844,7 @@ function Library:Init(InitData)
 					Toggle["56"] = Instance.new("UICorner", Toggle["55"]);
 				end
 				function Toggle:ButtonEffect()
-					if State then
+					if Toggle.State then
 						Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
 					else
 						Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
