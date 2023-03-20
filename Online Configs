@@ -317,14 +317,14 @@ function Library:Init(InitData)
 			local Delta = Input.Position - DragStart
 			local NewPosition = UDim2.new(FrameStart.X.Scale, FrameStart.X.Offset + Delta.X, FrameStart.Y.Scale, FrameStart.Y.Offset + Delta.Y)
 
-			game:GetService("TweenService"):Create(Frame, TweenInfo.new(DragSpeed, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Position = NewPosition}):Play()
+			game:GetService("TweenService"):Create(GUI["2"], TweenInfo.new(DragSpeed, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Position = NewPosition}):Play()
 		end
 
 		Frame.InputBegan:Connect(function(Input)
 			if Input.UserInputType == Enum.UserInputType["MouseButton1"] then
 				Dragging = true
 				DragStart = Input.Position
-				FrameStart = Frame.Position
+				FrameStart = GUI["2"].Position
 
 				Input.Changed:Connect(function()
 					if Input.UserInputState == Enum.UserInputState["End"] then
@@ -459,7 +459,7 @@ function Library:Init(InitData)
 		Tab["14"].CanvasSize = UDim2.new(0, Tab["6c"].AbsoluteContentSize.X + 250, 0, 0)
 
 		Tab["6c"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-			Tab["14"].CanvasSize = UDim2.new(0, Tab["6c"].AbsoluteContentSize.X + (Tab["6b"].PaddingLeft.Offset * 2), 0, 0)
+			Tab["14"].CanvasSize = UDim2.new(0, Tab["6c"].AbsoluteContentSize.X + (Tab["6b"].PaddingLeft.Offset * 2), Tab["16"].Size.Y.Scale, Tab["16"].Size.Y.Offset)
 		end)
 		
 		function Tab:Set(NewName)
@@ -857,7 +857,7 @@ function Library:Init(InitData)
 							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
 						end
 					else
-						if StateTo ==  true then
+						if StateTo ~= true then
 							Toggle.State = true
 							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
 						else
