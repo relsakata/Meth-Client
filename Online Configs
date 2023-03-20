@@ -52,7 +52,7 @@ function Library:Init(InitData)
 		GUI["2"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
 		GUI["2"]["Position"] = (UDim2.new(0.28295907378196716, 0, 0.16084788739681244, 0))
 		GUI["2"]["Name"] = [[Main]];
-		GUI["2"]["ClipsDescendants"] = true;
+		GUI["2"]["ClipsDescendants"] = false;
 
 		-- StarterGui.My Library.Main.UICorner
 		GUI["3"] = Instance.new("UICorner", GUI["2"]);
@@ -65,6 +65,7 @@ function Library:Init(InitData)
 		GUI["4"]["Size"] = UDim2.new(1, 0, 0, 35);
 		GUI["4"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
 		GUI["4"]["Name"] = [[TopBar]];
+		GUI["4"]["ClipsDescendants"] = true;
 
 		-- StarterGui.My Library.Main.TopBar.UICorner
 		GUI["5"] = Instance.new("UICorner", GUI["4"]);
@@ -237,7 +238,7 @@ function Library:Init(InitData)
 		GUI["72"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 		GUI["72"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 		GUI["72"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-		GUI["72"]["TextSize"] = 14;
+		GUI["72"]["TextSize"] = 5;
 		GUI["72"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 		GUI["72"]["Size"] = UDim2.new(1, 0, 1, 0);
 		GUI["72"]["Text"] = [[ToolTips]];
@@ -295,6 +296,7 @@ function Library:Init(InitData)
 		GUI["d"]["ScrollBarThickness"] = 3;
 		GUI["d"]["Position"] = UDim2.new(0, 0, 0, 35);
 		GUI["d"]["Name"] = [[Navigation]];
+		GUI["d"]["ClipsDescendants"] = true;
 
 		-- StarterGui.My Library.Main.Navigation.UIListLayout
 		GUI["e"] = Instance.new("UIListLayout", GUI["d"]);
