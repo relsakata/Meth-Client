@@ -858,25 +858,21 @@ function Library:Init(InitData)
 				Toggle["50"].MouseEnter:Connect(function()
 					Toggle.Hover = true
 
-					if not Toggle.State then
-						Library:tween(Toggle["50"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-						Library:tween(Toggle["51"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-					end
+					Library:tween(Toggle["50"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
+					Library:tween(Toggle["51"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
 				end)
 
 				Toggle["50"].MouseLeave:Connect(function()
 					Toggle.Hover = false
 
-					if not Toggle.State then
-						Library:tween(Toggle["50"], {BackgroundColor3 = Color3.fromRGB(85,85,85)})
-						Library:tween(Toggle["51"], {BackgroundColor3 = Color3.fromRGB(85,85,85)})
-					end
+					Library:tween(Toggle["50"], {BackgroundColor3 = Color3.fromRGB(85,85,85)})
+					Library:tween(Toggle["51"], {BackgroundColor3 = Color3.fromRGB(85,85,85)})
 				end)
 
 				uis.InputBegan:Connect(function(input, gpe)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if Toggle.Hover then
-							if State == true then State = false else State = true end
+							if Toggle.State == true then Toggle.State = false else Toggle.State = true end
 							Toggle:ButtonEffect()
 							Callback(State)
 						end
