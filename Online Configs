@@ -202,17 +202,20 @@ function Library:Init(InitData)
 	uis.InputBegan:Connect(function(Input, GPE)
 		if Input.KeyCode == Keybind then
 			if not GUI.Enabled then
-				GUI.Enabled = true
+				GUI["2"].ClipsDescendants = true
 				GUI["1"].Enabled = true
 				GUI["2"]["Size"] = UDim2.new(0, 0, 0, 0)
 				GUI["2"]:TweenSize(UDim2.new(0, 515, 0, 542),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine,0.25,true)
 				task.wait(0.2)
 				GUI.Enabled = true
+				GUI["2"].ClipsDescendants = false
 			else
+				GUI["2"].ClipsDescendants = true
 				GUI["2"]:TweenSize(UDim2.new(0, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine,0.25,true)
 				task.wait(0.2)
 				GUI.Enabled = false
 				GUI["1"].Enabled = false
+				GUI["2"].ClipsDescendants = false
 			end
 		end
 	end)
