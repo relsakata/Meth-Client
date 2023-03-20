@@ -457,9 +457,8 @@ function Library:Init(InitData)
 			Tab["6c"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
 		end
-		Tab["14"].CanvasSize = UDim2.new(0, Tab["6c"].AbsoluteContentSize.X + 250, 0, 0)
 
-		Tab["6c"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		Tab["66"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 			Tab["14"].CanvasSize = UDim2.new(0, Tab["6c"].AbsoluteContentSize.X + (Tab["6b"].PaddingLeft.Offset * 2), Tab["16"].Size.Y.Scale, Tab["16"].Size.Y.Offset)
 		end)
 		
