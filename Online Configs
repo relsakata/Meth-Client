@@ -1351,19 +1351,24 @@ function Library:Init(InitData)
 				end
 				
 				Box["58"].MouseEnter:Connect(function()
-					Library:tween(["58"], {["BackgroundColor3"] = Color3.fromRGB(160,160,160)}
+					Library:tween(Box["58"], {["BackgroundColor3"] = Color3.fromRGB(160,160,160)})
 				end)
 				
 				Box["58"].MouseLeave:Connect(function()
 					Library:tween(Box["58"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
 				end)
 				
-				Box["61"].FocusLost:Connect(function(EP})
+				Box["61"].FocusLost:Connect(function(EP)
 					if EP then
 						pcall(Callback, Box["61"].Text)
-						Box["BoxInput"].Text = ""
+						Box["61"].Text = ""
 					end
 				end)
+
+				function Box:Set(Value)
+					Box["61"].Text = Value
+					pcall(Callback, Box["61"].Text)
+				end
 				return Box
 			end
 			
