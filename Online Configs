@@ -476,7 +476,7 @@ function Library:Init(InitData)
 				Tab.Active = true
 
 				Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-				Tab["14"]:TweenPosition(UDim2.new(0, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
+				--Tab["14"]:TweenPosition(UDim2.new(0, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
 				GUI.CurrentTab = Tab
 				Tab["14"]["Visible"] = true;
 			end
@@ -485,10 +485,10 @@ function Library:Init(InitData)
 		function Tab:Deactivate()
 			if Tab.Active then
 				Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(75,75,75)})
-				Tab["14"]:TweenPosition(UDim2.new(-1, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
+				--Tab["14"]:TweenPosition(UDim2.new(-1, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
 				Tab.Active = false
 				Tab.Hover = false
-				Tab["14"].Position = UDim2.new(1, 0, 0, 0)
+				--Tab["14"].Position = UDim2.new(1, 0, 0, 0)
 				
 			end
 		end
