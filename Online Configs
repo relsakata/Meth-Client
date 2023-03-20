@@ -1273,3 +1273,5 @@ function Library:Init(InitData)
 	end
 	return GUI
 end
+
+return Library
