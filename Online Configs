@@ -870,7 +870,7 @@ function Library:Init(InitData)
 							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
 						end
 					else
-						if StateTo ~= true then
+						if StateTo == true then
 							Toggle.State = true
 							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
 						else
