@@ -564,6 +564,36 @@ function Library:Init(InitData)
 				Section["17"]["Size"] = UDim2.new(1, 0, 1, 0);
 				Section["17"]["Name"] = Name;
 
+				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UIStroke
+				Section["18"] = Instance.new("UIStroke", Section["17"]);
+				Section["18"]["Color"] = Color3.fromRGB(255, 255, 255);
+
+				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title
+				Section["19"] = Instance.new("Frame", Section["17"]);
+				Section["19"]["BorderSizePixel"] = 0;
+				Section["19"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
+				Section["19"]["Size"] = UDim2.new(0, 79, 0, 18);
+				Section["19"]["Position"] = UDim2.new(0, 77, 0, -10);
+				Section["19"]["Name"] = [[Title]];
+
+				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel
+				Section["1a"] = Instance.new("TextLabel", Section["19"]);
+				Section["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+				Section["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+				Section["1a"]["TextSize"] = 10;
+				Section["1a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+				Section["1a"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Section["1a"]["Text"] = Name;
+				Section["1a"]["BackgroundTransparency"] = 1;
+
+				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel.UICorner
+				Section["1b"] = Instance.new("UICorner", Section["1a"]);
+
+
+				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.UICorner
+				Section["1c"] = Instance.new("UICorner", Section["19"]);
+
+
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents
 				Section["1d"] = Instance.new("Frame", Section["17"]);
 				Section["1d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -573,7 +603,7 @@ function Library:Init(InitData)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIPadding
 				Section["1e"] = Instance.new("UIPadding", Section["1d"]);
-				Section["1e"]["PaddingTop"] = UDim.new(0, -5);
+				Section["1e"]["PaddingTop"] = UDim.new(0, 10);
 				Section["1e"]["PaddingRight"] = UDim.new(0, 5);
 				Section["1e"]["PaddingBottom"] = UDim.new(0, 5);
 				Section["1e"]["PaddingLeft"] = UDim.new(0, 5);
@@ -588,45 +618,15 @@ function Library:Init(InitData)
 				
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UICorner
 				Section["64"] = Instance.new("UICorner", Section["17"]);
-				
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UIStroke
-				Section["18"] = Instance.new("UIStroke", Section["17"]);
-				Section["18"]["Color"] = Color3.fromRGB(255, 255, 255);
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Title
-				Section["1dd"] = Instance.new("Frame", Section["1d"]);
-				Section["1dd"]["BorderSizePixel"] = 0;
-				Section["1dd"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
-				Section["1dd"]["BackgroundTransparency"] = 1;
-				Section["1dd"]["Size"] = UDim2.new(1, 0, 0, 1);
-				Section["1dd"]["Position"] = UDim2.new(0.30000001192092896, 0, 0, -10);
-				Section["1dd"]["Name"] = [[Title]];
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Title.TextLabel
-				Section["1ee"] = Instance.new("TextLabel", Section["1dd"]);
-				Section["1ee"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
-				Section["1ee"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				Section["1ee"]["TextSize"] = 10;
-				Section["1ee"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1ee"]["Size"] = UDim2.new(0, 75, 0, 15);
-				Section["1ee"]["Text"] = Name;
-				Section["1ee"]["Position"] = UDim2.new(0.5, 0, 0, 0)
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Title.TextLabel.UICorner
-				Section["1ff"] = Instance.new("UICorner", Section["1ee"]);
-
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Title.UICorner
-				Section["200"] = Instance.new("UICorner", Section["1dd"]);
 			end
 			Section["17"].Size = UDim2.new(0.99, 0, 0, Section["1f"].AbsoluteContentSize.Y + Section["1f"].Padding.Offset)
 
 			Section["1f"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 				Section["17"].Size = UDim2.new(0.99, 0, 0, Section["1f"].AbsoluteContentSize.Y + (Section["1f"].Padding.Offset+15))
 			end)
-			Section["1ee"].Size = UDim2.new(Section["1ee"].Size.X.Scale, Section["1ee"].TextBounds.X + 4, Section["1ee"].Size.Y.Scale, Section["1ee"].Size.Y.Offset)
-			Section["1ee"]:GetPropertyChangedSignal("Text"):Connect(function()
-				Section["1ee"].Size = UDim2.new(Section["1ee"].Size.X.Scale, Section["1ee"].TextBounds.X + 4, Section["1ee"].Size.Y.Scale, Section["1ee"].Size.Y.Offset)
+			Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
+			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
+				Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
 			end)
 				
 			
