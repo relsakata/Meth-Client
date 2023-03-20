@@ -405,7 +405,7 @@ function Library:Init(InitData)
 			Tab["11"]["BorderSizePixel"] = 0;
 			Tab["11"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
 			Tab["11"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-			Tab["11"]["TextSize"] = 14;
+			Tab["11"]["TextSize"] = 10;
 			Tab["11"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 			Tab["11"]["Size"] = UDim2.new(0, 100, 1, 0);
 			Tab["11"]["BorderColor3"] = Color3.fromRGB(255, 255, 255);
@@ -648,7 +648,7 @@ function Library:Init(InitData)
 					Label["2a"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Label["2a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Label["2a"]["TextTransparency"] = 0.18000000715255737;
-					Label["2a"]["TextSize"] = 14;
+					Label["2a"]["TextSize"] = 10;
 					Label["2a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Label["2a"]["Size"] = UDim2.new(1, 150, 1, 0);
 					Label["2a"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -713,7 +713,7 @@ function Library:Init(InitData)
 					Button["22"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Button["22"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Button["22"]["TextTransparency"] = 0.18000000715255737;
-					Button["22"]["TextSize"] = 14;
+					Button["22"]["TextSize"] = 10;
 					Button["22"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Button["22"]["Size"] = UDim2.new(1, 165, 1, 0);
 					Button["22"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -833,7 +833,7 @@ function Library:Init(InitData)
 					Toggle["51"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Toggle["51"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Toggle["51"]["TextTransparency"] = 0.18000000715255737;
-					Toggle["51"]["TextSize"] = 14;
+					Toggle["51"]["TextSize"] = 10;
 					Toggle["51"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Toggle["51"]["Size"] = UDim2.new(0, 165, 0, 20);
 					Toggle["51"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -956,7 +956,7 @@ function Library:Init(InitData)
 					Slider["2f"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Slider["2f"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Slider["2f"]["TextTransparency"] = 0.18000000715255737;
-					Slider["2f"]["TextSize"] = 14;
+					Slider["2f"]["TextSize"] = 10;
 					Slider["2f"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Slider["2f"]["Size"] = UDim2.new(1, 130, 1, -30);
 					Slider["2f"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -1144,7 +1144,7 @@ function Library:Init(InitData)
 					Dropdown["3b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Dropdown["3b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Dropdown["3b"]["TextTransparency"] = 0.18000000715255737;
-					Dropdown["3b"]["TextSize"] = 14;
+					Dropdown["3b"]["TextSize"] = 10;
 					Dropdown["3b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Dropdown["3b"]["Size"] = UDim2.new(0, 165, 0, 20);
 					Dropdown["3b"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -1366,11 +1366,11 @@ function Library:Init(InitData)
 					Box["59"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Box["59"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Box["59"]["TextTransparency"] = 0.18000000715255737;
-					Box["59"]["TextSize"] = 14;
+					Box["59"]["TextSize"] = 10;
 					Box["59"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Box["59"]["Size"] = UDim2.new(1, 130, 1, -30);
 					Box["59"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Box["59"]["Text"] = [[Box]];
+					Box["59"]["Text"] = Name;
 					Box["59"]["Name"] = [[Box]];
 					Box["59"]["BackgroundTransparency"] = 0.5;
 					Box["59"]["Position"] = UDim2.new(0, 10, 0, 4);
@@ -1420,6 +1420,7 @@ function Library:Init(InitData)
 					Box["61"]["Position"] = UDim2.new(0, 10, 0, 0);
 					Box["61"]["Name"] = [[BoxText]];
 					Box["61"]["ClearTextOnFocus"] = false;
+					Box["61"].TextWrapped = true;
 
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText.UICorner
 					Box["62"] = Instance.new("UICorner", Box["61"]);
