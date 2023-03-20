@@ -487,6 +487,7 @@ function Library:Init(InitData)
 				Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(75,75,75)})
 				--Tab["14"]:TweenPosition(UDim2.new(-1, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
 				Tab.Active = false
+				Tab["14"]["Visible"] = false
 				Tab.Hover = false
 				--Tab["14"].Position = UDim2.new(1, 0, 0, 0)
 				
