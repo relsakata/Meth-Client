@@ -157,7 +157,7 @@ function Library:Init(InitData)
 		GUI["6f"]["Rotation"] = 90;
 		GUI["6f"]["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(43, 43, 43)),ColorSequenceKeypoint.new(0.329, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(0.490, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(43, 43, 43))};
 
-	end
+	endf
 	
 	local Keybind = Enum.KeyCode["LeftControl"]
 	
@@ -1202,7 +1202,7 @@ function Library:Init(InitData)
 					Dropdown["46"]["PaddingTop"] = UDim.new(0, 5)
 
 				end
-				local ExpandedSize = UDim2.new(0, 229, 0, 240);
+				local ExpandedSize = UDim2.new(0, 229, 0, 100);
 				local NormalSize = UDim2.new(0, 229, 0, 30);
 				
 				Dropdown["44"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
