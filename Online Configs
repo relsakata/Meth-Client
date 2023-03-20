@@ -375,6 +375,7 @@ function Library:Init(InitData)
 			Tab["14"]["ScrollBarThickness"] = 3;
 			Tab["14"]["Name"] = Name;
 			Tab["14"]["Visible"] = false;
+			Tab["14"]["CanvasSize"] = UDim2.new(0, 0, 2, 0)
 			-- StarterGui.My Library.Main.Border
 			GUI["6d"] = Instance.new("Frame", GUI["13"]);
 			GUI["6d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -457,10 +458,6 @@ function Library:Init(InitData)
 			Tab["6c"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
 		end
-
-		Tab["66"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-			Tab["14"].CanvasSize = UDim2.new(0, Tab["6c"].AbsoluteContentSize.X + (Tab["6b"].PaddingLeft.Offset * 2), Tab["16"].Size.Y.Scale, Tab["16"].Size.Y.Offset)
-		end)
 		
 		function Tab:Set(NewName)
 			Tab["11"]["Text"] = NewName;
@@ -480,7 +477,7 @@ function Library:Init(InitData)
 				Tab["14"]["Visible"] = true;
 				if Tab.FadeRemove == nil then
 					Tab.FadeRemove = runService.RenderStepped:Connect(function()
-						if Tab["14"].CanvasPosition.Y.Offset == 0 then
+						if Tab["14"].CanvasPosition.Y == 0 then
 							GUI["6e"].Visible = false
 						else
 							GUI["6e"].Visible = true
