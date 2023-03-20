@@ -600,7 +600,7 @@ function Library:Init(InitData)
 				Section["1e"] = Instance.new("UIPadding", Section["1d"]);
 				Section["1e"]["PaddingTop"] = UDim.new(0, 10);
 				Section["1e"]["PaddingRight"] = UDim.new(0, 5);
-				Section["1e"]["PaddingBottom"] = UDim.new(0, 10);
+				Section["1e"]["PaddingBottom"] = UDim.new(0, 5);
 				Section["1e"]["PaddingLeft"] = UDim.new(0, 5);
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIListLayout
