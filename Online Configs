@@ -1265,6 +1265,108 @@ function Library:Init(InitData)
 				return Dropdown
 			end
 			
+			function Section:Box(Name, Default, Callback)
+				Name = Name or "Unnamed"
+				Default = Default or ""
+				Callback = Callback or function() end
+				
+				local Box = {}
+				
+				do
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box
+					Box["58"] = Instance.new("Frame", Section["1d"]);
+					Box["58"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
+					Box["58"]["Size"] = UDim2.new(1, 0, 0, 51);
+					Box["58"]["Name"] = [[Box]];
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.Box
+					Box["59"] = Instance.new("TextLabel", Box["58"]);
+					Box["59"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
+					Box["59"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
+					Box["59"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+					Box["59"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+					Box["59"]["TextTransparency"] = 0.18000000715255737;
+					Box["59"]["TextSize"] = 14;
+					Box["59"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+					Box["59"]["Size"] = UDim2.new(1, 130, 1, -30);
+					Box["59"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
+					Box["59"]["Text"] = [[Box]];
+					Box["59"]["Name"] = [[Box]];
+					Box["59"]["BackgroundTransparency"] = 0.5;
+					Box["59"]["Position"] = UDim2.new(0, 10, 0, 4);
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.Box.UICorner
+					Box["5a"] = Instance.new("UICorner", Box["59"]);
+
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.Box.UIAspectRatioConstraint
+					Box["5b"] = Instance.new("UIAspectRatioConstraint", Box["59"]);
+					Box["5b"]["AspectRatio"] = 15.025296211242676;
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.UICorner
+					Box["5c"] = Instance.new("UICorner", Box["58"]);
+
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.UIStroke
+					Box["5d"] = Instance.new("UIStroke", Box["58"]);
+					Box["5d"]["Color"] = Color3.fromRGB(130, 130, 130);
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack
+					Box["5e"] = Instance.new("Frame", Box["58"]);
+					Box["5e"]["BorderSizePixel"] = 0;
+					Box["5e"]["BackgroundColor3"] = Color3.fromRGB(61, 61, 61);
+					Box["5e"]["Size"] = UDim2.new(1, -10, 0, 25);
+					Box["5e"]["Position"] = UDim2.new(1, -225, 1, -30);
+					Box["5e"]["Name"] = [[BoxBack]];
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.UICorner
+					Box["5f"] = Instance.new("UICorner", Box["5e"]);
+
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.UIStroke
+					Box["60"] = Instance.new("UIStroke", Box["5e"]);
+					Box["60"]["Color"] = Color3.fromRGB(157, 157, 157);
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText
+					Box["61"] = Instance.new("TextBox", Box["5e"]);
+					Box["61"]["TextSize"] = 14;
+					Box["61"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+					Box["61"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+					Box["61"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+					Box["61"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+					Box["61"]["BackgroundTransparency"] = 1;
+					Box["61"]["Size"] = UDim2.new(1, -8, 1, 0);
+					Box["61"]["Text"] = [[]];
+					Box["61"]["Position"] = UDim2.new(0, 10, 0, 0);
+					Box["61"]["Name"] = [[BoxText]];
+					Box["61"]["ClearTextOnFocus"] = false;
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText.UICorner
+					Box["62"] = Instance.new("UICorner", Box["61"]);
+
+
+					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText.UIAspectRatioConstraint
+					Box["63"] = Instance.new("UIAspectRatioConstraint", Box["61"]);
+					Box["63"]["AspectRatio"] = 7.781999588012695;
+				end
+				
+				Box["58"].MouseEnter:Connect(function()
+					Library:tween(["58"], {["BackgroundColor3"] = Color3.fromRGB(160,160,160)}
+				end)
+				
+				Box["58"].MouseLeave:Connect(function()
+					Library:tween(Box["58"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
+				end)
+				
+				Box["61"].FocusLost:Connect(function(EP})
+					if EP then
+						pcall(Callback, Box["61"].Text)
+						Box["BoxInput"].Text = ""
+					end
+				end)
+				return Box
+			end
+			
 			return Section
 		end
 		return Tab
