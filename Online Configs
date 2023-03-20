@@ -471,7 +471,6 @@ function Library:Init(InitData)
 			if not Tab.Active then
 				if GUI.CurrentTab ~= nil then
 					GUI.CurrentTab:Deactivate()
-					task.wait(1)
 				end
 				Tab.Active = true
 
