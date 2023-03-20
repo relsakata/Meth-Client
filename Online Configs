@@ -479,9 +479,9 @@ function Library:Init(InitData)
 				if Tab.FadeRemove == nil then
 					Tab.FadeRemove = runService.RenderStepped:Connect(function()
 						if Tab["14"].CanvasPosition.Y == 0 then
-							GUI["6e"].Visible = false
+							Library:tween(GUI["6e"], {Transparency = 1})
 						else
-							GUI["6e"].Visible = true
+							Library:tween(GUI["6e"], {Transparency = 0})
 						end
 					end)
 				end
