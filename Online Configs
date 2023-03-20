@@ -30,8 +30,6 @@ function Library:tween(object, goal, callback)
 end
 
 function Library:Init(InitData)
-	
-	Name = Name or "Unnamed"
 	local GUI = {
 		CurrentTab = nil,
 		TooltipEnabled = false,
