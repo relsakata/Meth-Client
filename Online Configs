@@ -153,7 +153,7 @@ function Library:Init(InitData)
 
 		-- StarterGui.My Library.Main.ContentContainer.Fade.UIGradient
 		GUI["6f"] = Instance.new("UIGradient", GUI["6e"]);
-		GUI["6f"]["Transparency"] = NumberSequence.new{NumberSequenceKeypoint.new(0.000, 0),NumberSequenceKeypoint.new(0.327, 0.512499988079071),NumberSequenceKeypoint.new(0.587, 0.7374999523162842),NumberSequenceKeypoint.new(0.793, 0.8687499761581421),NumberSequenceKeypoint.new(0.995, 1),NumberSequenceKeypoint.new(1.000, 0)};
+		GUI["6f"]["Transparency"] = NumberSequence.new{NumberSequenceKeypoint.new(0.000, 0),NumberSequenceKeypoint.new(0.288, 0.41874998807907104),NumberSequenceKeypoint.new(0.327, 0.512499988079071),NumberSequenceKeypoint.new(0.587, 0.7374999523162842),NumberSequenceKeypoint.new(0.793, 0.8687499761581421),NumberSequenceKeypoint.new(0.995, 1),NumberSequenceKeypoint.new(1.000, 1)};
 		GUI["6f"]["Rotation"] = 90;
 		GUI["6f"]["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(43, 43, 43)),ColorSequenceKeypoint.new(0.329, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(0.490, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(43, 43, 43))};
 
