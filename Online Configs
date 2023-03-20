@@ -847,11 +847,23 @@ function Library:Init(InitData)
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.CheckmarkHolder.UICorner
 					Toggle["56"] = Instance.new("UICorner", Toggle["55"]);
 				end
-				function Toggle:ButtonEffect()
-					if Toggle.State then
-						Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
+				function Toggle:ButtonEffect(StateTo)
+					if StateTo == nil then
+						if Toggle.State then
+							Toggle.State = false
+							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+						else
+							Toggle.State = true
+							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
+						end
 					else
-						Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+						if StateTo ==  true then
+							Toggle.State = true
+							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
+						else
+							Toggle.State = false
+							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
+						end
 					end
 				end
 					
@@ -872,17 +884,14 @@ function Library:Init(InitData)
 				uis.InputBegan:Connect(function(input, gpe)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if Toggle.Hover then
-							if Toggle.State == true then Toggle.State = false else Toggle.State = true end
 							Toggle:ButtonEffect()
 							Callback(State)
 						end
 					end
 				end)
-				Toggle:ButtonEffect()
 				
 				function Toggle:Set(StateTo)
-					Toggle.State = StateTo
-					Toggle:ButtonEffect()
+					Toggle:ButtonEffect(StateTo)
 				end
 				
 				function Toggle:Tooltip(Text)
