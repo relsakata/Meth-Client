@@ -306,6 +306,13 @@ function Library:Init(InitData)
 		GUI["f"] = Instance.new("UIPadding", GUI["d"]);
 	end
 	
+
+	GUI["d"].CanvasSize = UDim2.new(0, GUI["e"].AbsoluteContentSize.X + 250, 0, 0)
+
+	GUI["d"]:FindFirstChild("UIListLayout"):GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		GUI["d"].CanvasSize = UDim2.new(0, GUI["e"].AbsoluteContentSize.X + (GUI["f"].PaddingLeft.Offset * 2), 0, 0)
+	end)
+	
 	function GUI:Tab(Name)
 		Name = Name or "Default Name"
 		
@@ -832,7 +839,7 @@ function Library:Init(InitData)
 				Toggle:ButtonEffect()
 				
 				function Toggle:Set(StateTo)
-					State = StateTo
+					Toggle.State = StateTo
 					Toggle:ButtonEffect()
 				end
 				
