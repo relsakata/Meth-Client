@@ -592,6 +592,7 @@ function Library:Init(InitData)
 				Section["1a"]["Text"] = Name;
 				Section["1a"]["BackgroundTransparency"] = 1;
 				Section["1a"]["Position"] = UDim2.new(0.5, 0, 0, -6)
+				Section["1a"].AnchorPoint = UDim.new(1,0)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel.UICorner
 				Section["1b"] = Instance.new("UICorner", Section["1a"]);
@@ -635,7 +636,7 @@ function Library:Init(InitData)
 			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
 				Section["19"].Size = UDim2.new(Section["1a"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["1a"].Size.Y.Scale, Section["1a"].Size.Y.Offset)
 				CenterSize = Section["1a"].TextBounds.X
-				Section["1a"].Position = UDim2.new(0.5, CenterSize/2, 0, -4)
+				Section["1a"].Position = UDim2.new(0.5, CenterSize/2, 0, -7)
 			end)
 
 
