@@ -588,7 +588,7 @@ function Library:Init(InitData)
 				Section["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 				Section["1a"]["TextSize"] = 12;
 				Section["1a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1a"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Section["1a"]["Size"] = UDim2.new(0, 0, 0, 20);
 				Section["1a"]["Text"] = Name;
 				Section["1a"]["BackgroundTransparency"] = 1;
 				Section["1a"]["Position"] = UDim2.new(0.5, 0, 0, -6)
@@ -635,7 +635,7 @@ function Library:Init(InitData)
 			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
 				Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
 				CenterSize = Section["1a"].TextBounds.X
-				Section["1a"].Position = UDim2.new(0.5, (CenterSize / 2) + 2, 0.95, 0)
+				Section["1a"].Position = UDim2.new(0.5, (CenterSize) + 2, 0.95, 0)
 			end)
 
 
