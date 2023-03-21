@@ -36,7 +36,7 @@ function Library:Init(InitData)
 		ToolTipConnection = nil,
 		Enabled = true
 	}
-	
+
 	--Main Render
 	do
 		-- StarterGui.My Library
@@ -118,7 +118,7 @@ function Library:Init(InitData)
 		GUI["b"]["BackgroundTransparency"] = 1;
 		GUI["b"]["Size"] = UDim2.new(1, 0, 1, 0);
 		GUI["b"]["Name"] = [[DropShadowHolder]];
-		
+
 		-- StarterGui.My Library.Main.DropShadowHolder.DropShadow
 		GUI["c"] = Instance.new("ImageLabel", GUI["b"]);
 		GUI["c"]["ZIndex"] = 0;
@@ -158,9 +158,9 @@ function Library:Init(InitData)
 		GUI["6f"]["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(43, 43, 43)),ColorSequenceKeypoint.new(0.329, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(0.490, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(43, 43, 43))};
 
 	end
-	
+
 	local Keybind = Enum.KeyCode["LeftControl"]
-	
+
 	if InitData then
 		if InitData["WindowName"] then
 			GUI["7"].Text = InitData["WindowName"]
@@ -198,7 +198,7 @@ function Library:Init(InitData)
 			end
 		end
 	end
-	
+
 	uis.InputBegan:Connect(function(Input, GPE)
 		if Input.KeyCode == Keybind then
 			if not GUI.Enabled then
@@ -219,7 +219,7 @@ function Library:Init(InitData)
 			end
 		end
 	end)
-	
+
 	do
 		-- StarterGui.My Library.ToolTips
 		GUI["70"] = Instance.new("Frame", GUI["1"]);
@@ -259,7 +259,7 @@ function Library:Init(InitData)
 		GUI["75"] = Instance.new("UIStroke", GUI["70"]);
 		GUI["75"]["Color"] = Color3.fromRGB(150, 150, 150);
 	end
-	
+
 	function ToolTipActivate(Text)
 		GUI.TooltipEnabled = true
 		Text = Text or "No Text"
@@ -272,9 +272,9 @@ function Library:Init(InitData)
 				GUI["70"].Position = UDim2.new(0, mouse.X, 0, mouse.Y-20)
 			end)
 		end
-		
+
 	end
-	
+
 	function ToolTipDeactivate()
 		if not GUI.TooltipEnabled then return end
 		GUI.TooltipEnabled = false
@@ -285,7 +285,7 @@ function Library:Init(InitData)
 			GUI.ToolTipConnection = nil
 		end
 	end
-	
+
 	--Navigation
 	do
 		-- StarterGui.My Library.Main.Navigation
@@ -310,7 +310,7 @@ function Library:Init(InitData)
 		-- StarterGui.My Library.Main.Navigation.UIPadding
 		GUI["f"] = Instance.new("UIPadding", GUI["d"]);
 	end
-	
+
 	local function Drag(Frame, Speed)
 		local Dragging;
 		local DragStart;
@@ -359,17 +359,17 @@ function Library:Init(InitData)
 	GUI["d"]:FindFirstChild("UIListLayout"):GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		GUI["d"].CanvasSize = UDim2.new(0, GUI["e"].AbsoluteContentSize.X + (GUI["f"].PaddingLeft.Offset * 2), 0, 0)
 	end)
-	
+
 	function GUI:Tab(Name)
 		Name = Name or "Default Name"
-		
+
 		local Tab = {
 			Hover = false,
 			Active = false,
 			FadeRemove = nil
 		}
 		--Render
-		
+
 		do
 			-- StarterGui.My Library.Main.ContentContainer.MainTab
 			Tab["14"] = Instance.new("ScrollingFrame", GUI["13"]);
@@ -401,21 +401,21 @@ function Library:Init(InitData)
 			Tab["16"]["BackgroundTransparency"] = 1;
 			Tab["16"]["Size"] = UDim2.new(1, -254, 1, 0);
 			Tab["16"]["Name"] = [[LeftSide]];
-			
+
 			-- StarterGui.My Library.Main.Navigation.NotSelected
 			Tab["11"] = Instance.new("TextLabel", GUI["d"]);
 			Tab["11"]["ZIndex"] = 10;
 			Tab["11"]["BorderSizePixel"] = 0;
 			Tab["11"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
 			Tab["11"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-			Tab["11"]["TextSize"] = 10;
+			Tab["11"]["TextSize"] = 12;
 			Tab["11"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 			Tab["11"]["Size"] = UDim2.new(0, 100, 1, 0);
 			Tab["11"]["BorderColor3"] = Color3.fromRGB(255, 255, 255);
 			Tab["11"]["Text"] = Name;
 			Tab["11"]["Name"] = Name;
 			Tab["11"]["Position"] = UDim2.new(0, 423, 0, 173);
-			
+
 			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.UIPadding
 			Tab["65"] = Instance.new("UIPadding", Tab["16"]);
 			Tab["65"]["PaddingTop"] = UDim.new(0, 5);
@@ -463,12 +463,12 @@ function Library:Init(InitData)
 			Tab["6c"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
 		end
-		
+
 		function Tab:Set(NewName)
 			Tab["11"]["Text"] = NewName;
 			Tab["11"]["Name"] = NewName;
 		end
-		
+
 		function Tab:Activate()
 			if not Tab.Active then
 				if GUI.CurrentTab ~= nil then
@@ -504,7 +504,7 @@ function Library:Init(InitData)
 					Tab.FadeRemove:Disconnect()
 					Tab.FadeRemove = nil
 				end
-				
+
 			end
 		end
 
@@ -550,12 +550,12 @@ function Library:Init(InitData)
 				return RS
 			end
 		end
-		
+
 		function Tab:Section(Name)
 			Name = Name or "Unnamed"
-			
+
 			local Section = {}
-			
+
 			do
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1
 				Section["17"] = Instance.new("Frame", GetSide());
@@ -567,6 +567,12 @@ function Library:Init(InitData)
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UIStroke
 				Section["18"] = Instance.new("UIStroke", Section["17"]);
 				Section["18"]["Color"] = Color3.fromRGB(255, 255, 255);
+				
+				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIListLayout
+				Section["1f"] = Instance.new("UIListLayout", Section["17"]);
+				Section["1f"]["Padding"] = UDim.new(0, 0);
+				Section["1f"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title
 				Section["19"] = Instance.new("Frame", Section["17"]);
@@ -580,7 +586,7 @@ function Library:Init(InitData)
 				Section["1a"] = Instance.new("TextLabel", Section["19"]);
 				Section["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 				Section["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				Section["1a"]["TextSize"] = 10;
+				Section["1a"]["TextSize"] = 12;
 				Section["1a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 				Section["1a"]["Size"] = UDim2.new(1, 0, 1, 0);
 				Section["1a"]["Text"] = Name;
@@ -615,7 +621,7 @@ function Library:Init(InitData)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UICorner
 				Section["20"] = Instance.new("UICorner", Section["1d"]);
-				
+
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UICorner
 				Section["64"] = Instance.new("UICorner", Section["17"]);
 			end
@@ -628,15 +634,15 @@ function Library:Init(InitData)
 			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
 				Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
 			end)
-				
-			
+
+
 			function Section:Label(Name)
 				Name = Name or "No Text Assigned"
-				
+
 				local Label = {
 					Tag = "Label"
 				}
-				
+
 				do
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Label
 					Label["29"] = Instance.new("Frame", Section["1d"]);
@@ -651,7 +657,7 @@ function Library:Init(InitData)
 					Label["2a"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Label["2a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Label["2a"]["TextTransparency"] = 0.18000000715255737;
-					Label["2a"]["TextSize"] = 10;
+					Label["2a"]["TextSize"] = 12;
 					Label["2a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Label["2a"]["Size"] = UDim2.new(1, 150, 1, 0);
 					Label["2a"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -672,7 +678,7 @@ function Library:Init(InitData)
 					Label["2d"] = Instance.new("UIStroke", Label["29"]);
 					Label["2d"]["Color"] = Color3.fromRGB(130, 130, 130);
 				end
-				
+
 				function Label:Set(NewName)
 					if not NewName then return end
 					Label["29"]["Name"] = NewName;
@@ -689,19 +695,19 @@ function Library:Init(InitData)
 						ToolTipDeactivate()
 					end)
 				end
-				
+
 				return Label
 			end
-			
+
 			function Section:Button(Name, Callback)
 				Callback = Callback or function() end
-				
+
 				local Button = {
 					Hover = false,
 					Clicked = false,
 					Tag = "Button"
 				}
-				
+
 				do
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button
 					Button["21"] = Instance.new("Frame", Section["1d"]);
@@ -716,7 +722,7 @@ function Library:Init(InitData)
 					Button["22"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Button["22"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Button["22"]["TextTransparency"] = 0.18000000715255737;
-					Button["22"]["TextSize"] = 10;
+					Button["22"]["TextSize"] = 12;
 					Button["22"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Button["22"]["Size"] = UDim2.new(1, 165, 1, 0);
 					Button["22"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -754,23 +760,23 @@ function Library:Init(InitData)
 					Button["28"] = Instance.new("UIStroke", Button["21"]);
 					Button["28"]["Color"] = Color3.fromRGB(130, 130, 130);
 				end
-				
+
 				function Button:Set(NewName)
 					Button["21"]["Name"] = NewName;
 					Button["22"]["Text"] = NewName;
 					Button["22"]["Name"] = NewName;
 				end
-				
+
 				function Button:ButtonEffect()
 					Button["21"].BackgroundColor3 = Color3.fromRGB(205,205,205)
 					Button["22"].BackgroundColor3 = Color3.fromRGB(205,205,205)
-					
+
 					Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
 					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-					
+
 					Callback()
 				end
-				
+
 				Button["21"].MouseEnter:Connect(function()
 					Button.Hover = true
 					if not Button.Clicked then
@@ -795,7 +801,7 @@ function Library:Init(InitData)
 						end
 					end
 				end)
-				
+
 				function Button:Tooltip(Text)
 					Button["21"].MouseEnter:Connect(function()
 						ToolTipActivate(Text)
@@ -805,21 +811,21 @@ function Library:Init(InitData)
 						ToolTipDeactivate()
 					end)
 				end
-				
+
 				return Button
 			end
-			
+
 			function Section:Toggle(Name, Callback, State)
 				Name = Name or "Toggle"
 				State = State or false
 				Callback = Callback or function(State) end
-					
+
 				local Toggle = {
 					State = State or false,
 					Hover = false,
 					Tag = "Toggle"
 				}
-					
+
 				do
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive
 					Toggle["50"] = Instance.new("Frame", Section["1d"]);
@@ -836,7 +842,7 @@ function Library:Init(InitData)
 					Toggle["51"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Toggle["51"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Toggle["51"]["TextTransparency"] = 0.18000000715255737;
-					Toggle["51"]["TextSize"] = 10;
+					Toggle["51"]["TextSize"] = 12;
 					Toggle["51"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Toggle["51"]["Size"] = UDim2.new(0, 165, 0, 20);
 					Toggle["51"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -886,7 +892,7 @@ function Library:Init(InitData)
 						end
 					end
 				end
-					
+
 				Toggle["50"].MouseEnter:Connect(function()
 					Toggle.Hover = true
 
@@ -909,11 +915,11 @@ function Library:Init(InitData)
 						end
 					end
 				end)
-				
+
 				function Toggle:Set(StateTo)
 					Toggle:ButtonEffect(StateTo)
 				end
-				
+
 				function Toggle:Tooltip(Text)
 					Toggle["50"].MouseEnter:Connect(function()
 						ToolTipActivate(Text)
@@ -923,10 +929,10 @@ function Library:Init(InitData)
 						ToolTipDeactivate()
 					end)
 				end
-				
+
 				return Toggle
 			end
-			
+
 			function Section:Slider(Name, Callback, Options)
 				Name = Name or "Unnamed"
 				Callback = Callback or function() end
@@ -936,7 +942,7 @@ function Library:Init(InitData)
 					Max = 1,
 					Precise = false
 				}, Options or {})
-				
+
 				local Slider = {
 					Hover = false,
 					MouseDown = false,
@@ -944,7 +950,7 @@ function Library:Init(InitData)
 					BarHover = false,
 					Tag = "Slider"
 				}
-				
+
 				do
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider
 					Slider["2e"] = Instance.new("Frame", Section["1d"]);
@@ -959,7 +965,7 @@ function Library:Init(InitData)
 					Slider["2f"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Slider["2f"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Slider["2f"]["TextTransparency"] = 0.18000000715255737;
-					Slider["2f"]["TextSize"] = 10;
+					Slider["2f"]["TextSize"] = 12;
 					Slider["2f"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Slider["2f"]["Size"] = UDim2.new(1, 130, 1, -30);
 					Slider["2f"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -989,7 +995,7 @@ function Library:Init(InitData)
 					Slider["34"]["BorderSizePixel"] = 0;
 					Slider["34"]["BackgroundColor3"] = Color3.fromRGB(61, 61, 61);
 					Slider["34"]["Size"] = UDim2.new(1, -30, 0, 6);
-					Slider["34"]["Position"] = UDim2.new(1, -215, 1, -15);
+					Slider["34"]["Position"] = UDim2.new(1, -208, 1, -15);
 					Slider["34"]["Name"] = [[SliderBack]];
 
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.SliderBack.UICorner
@@ -1024,7 +1030,7 @@ function Library:Init(InitData)
 					Slider["39"]["Position"] = UDim2.new(0, 185, 0, 3);
 					Slider["39"]["ClearTextOnFocus"] = false;
 				end
-				
+
 				local Default, Min, Max, Precise = 0, 0, 1, false
 
 				if Options.Default then
@@ -1040,11 +1046,11 @@ function Library:Init(InitData)
 					Precise = Options.Precise
 				end
 				if Precise then
-					Slider["2f"]["Text"] = string.format("%.03f", Default)
+					Slider["39"]["Text"] = string.format("%.03f", Default)
 				else
-					Slider["2f"]["Text"] = Default
+					Slider["39"]["Text"] = Default
 				end
-				
+
 				function Slider:Set(Value)
 					if Value == nil then
 						Value = Min
@@ -1058,16 +1064,16 @@ function Library:Init(InitData)
 				function Slider:SetValue()
 					local Percentage = math.clamp((mouse.X - Slider["34"].AbsolutePosition.X) / (Slider["34"].AbsoluteSize.X), 0, 1)
 					local value = math.floor(((Options.Max - Options.Min)* Percentage) + Options.Min)
-					
+
 					Slider["39"]["Text"] = tostring(value)
 					game:GetService("TweenService"):Create(Slider["37"], TweenInfo.new(0.2, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(Percentage, 0, 1, 0)}):Play()
 					Callback(tonumber(Slider["39"]["Text"]))
 				end
-				
+
 				function Slider:GetValue()
 					return tonumber(Slider["39"]["Text"])
 				end
-				
+
 				--Logic
 				do
 					Slider["34"].MouseEnter:Connect(function()
@@ -1081,11 +1087,11 @@ function Library:Init(InitData)
 					Slider["2e"].MouseEnter:Connect(function()
 						Slider.Hover = true
 					end)
-					
+
 					Slider["2e"].MouseLeave:Connect(function()
 						Slider.Hover = false
 					end)
-					
+
 					uis.InputBegan:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 and Slider.BarHover then
 							if not Slider.Connection then
@@ -1095,7 +1101,7 @@ function Library:Init(InitData)
 							end
 						end
 					end)
-					
+
 					uis.InputEnded:Connect(function(input, gpe)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 then
 							Slider.MouseDown = false
@@ -1104,7 +1110,7 @@ function Library:Init(InitData)
 						end
 					end)
 				end
-				
+
 				function Slider:Tooltip(Text)
 					Slider["2e"].MouseEnter:Connect(function()
 						if Slider.BarHover then return end
@@ -1115,22 +1121,22 @@ function Library:Init(InitData)
 						ToolTipDeactivate()
 					end)
 				end
-				
+
 				return Slider
 			end
-			
+
 			function Section:Dropdown(Name, Data, Callback)
 				Name = Name or "Unnamed"
 				Data = Data or {}
 				Callback = Callback or function() end
-				
+
 				local Dropdown = {
 					IconHover = false,
 					Enabled = false,
 					CurrentItem = nil,
 					Tag = "Dropdown"
 				}
-				
+
 				do
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown
 					Dropdown["3a"] = Instance.new("Frame", Section["1d"]);
@@ -1147,7 +1153,7 @@ function Library:Init(InitData)
 					Dropdown["3b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Dropdown["3b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Dropdown["3b"]["TextTransparency"] = 0.18000000715255737;
-					Dropdown["3b"]["TextSize"] = 10;
+					Dropdown["3b"]["TextSize"] = 12;
 					Dropdown["3b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Dropdown["3b"]["Size"] = UDim2.new(0, 165, 0, 20);
 					Dropdown["3b"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -1213,21 +1219,21 @@ function Library:Init(InitData)
 				end
 				local ExpandedSize = UDim2.new(0, 229, 0, 100);
 				local NormalSize = UDim2.new(0, 229, 0, 30);
-				
+
 				Dropdown["44"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 					Dropdown["42"].CanvasSize = UDim2.new(0, 0, 0, Dropdown["44"].AbsoluteContentSize.Y)
 				end)
-				
+
 				Dropdown["3d"].MouseEnter:Connect(function()
 					Library:tween(Dropdown["3d"], {Rotation = 360})
 					Dropdown.IconHover = true
-					
+
 				end)
 				Dropdown["3d"].MouseLeave:Connect(function()
 					Library:tween(Dropdown["3d"], {Rotation = 0})
 					Dropdown.IconHover = false
 				end)
-				
+
 				uis.InputBegan:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.IconHover then
 						if not Dropdown.Enabled then
@@ -1239,9 +1245,9 @@ function Library:Init(InitData)
 						end
 					end
 				end)
-				
+
 				local CurrentData = {}
-				
+
 				for _, v in ipairs(Data) do
 					if type(v) == "userdata" then
 						CurrentData[v.Name] = v
@@ -1258,7 +1264,7 @@ function Library:Init(InitData)
 						Label["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
 						Label["TextXAlignment"] = Enum.TextXAlignment.Left;
 						Label["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-						Label["TextSize"] = 10;
+						Label["TextSize"] = 12;
 						Label["TextColor3"] = Color3.fromRGB(255, 255, 255);
 						Label["Name"] = val;
 						Label["BackgroundTransparency"] = 0;
@@ -1302,7 +1308,7 @@ function Library:Init(InitData)
 						end
 					end
 				end
-				
+
 				Dropdown:Setup(CurrentData)
 
 				function Dropdown:Get()
@@ -1345,16 +1351,16 @@ function Library:Init(InitData)
 				end
 				return Dropdown
 			end
-			
+
 			function Section:Box(Name, Default, Callback)
 				Name = Name or "Unnamed"
 				Default = Default or ""
 				Callback = Callback or function() end
-				
+
 				local Box = {
 					Tag = "Box"
 				}
-				
+
 				do
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box
 					Box["58"] = Instance.new("Frame", Section["1d"]);
@@ -1369,7 +1375,7 @@ function Library:Init(InitData)
 					Box["59"]["TextXAlignment"] = Enum.TextXAlignment.Left;
 					Box["59"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 					Box["59"]["TextTransparency"] = 0.18000000715255737;
-					Box["59"]["TextSize"] = 10;
+					Box["59"]["TextSize"] = 12;
 					Box["59"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
 					Box["59"]["Size"] = UDim2.new(1, 130, 1, -30);
 					Box["59"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
@@ -1432,15 +1438,15 @@ function Library:Init(InitData)
 					Box["63"] = Instance.new("UIAspectRatioConstraint", Box["61"]);
 					Box["63"]["AspectRatio"] = 7.781999588012695;
 				end
-				
+
 				Box["58"].MouseEnter:Connect(function()
 					Library:tween(Box["58"], {["BackgroundColor3"] = Color3.fromRGB(160,160,160)})
 				end)
-				
+
 				Box["58"].MouseLeave:Connect(function()
 					Library:tween(Box["58"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
 				end)
-				
+
 				Box["61"].FocusLost:Connect(function(EP)
 					if EP then
 						pcall(Callback, Box["61"].Text)
@@ -1454,7 +1460,7 @@ function Library:Init(InitData)
 				end
 				return Box
 			end
-			
+
 			return Section
 		end
 		return Tab
