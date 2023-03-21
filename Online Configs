@@ -575,16 +575,12 @@ function Library:Init(InitData)
 
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title
-				Section["199"] = Instance.new("Frame", Section["17"]);
-				Section["199"]["BorderSizePixel"] = 0;
-				Section["199"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
-				Section["199"]["Size"] = UDim2.new(0, 79, 0, 18);
-				Section["199"]["Position"] = UDim2.new(0, 77, 0, -10);
-				Section["199"]["Name"] = [[Title]];
-				
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIPadding
-				Section["1eee"] = Instance.new("UIPadding", Section["1d"]);
-				Section["1eee"]["PaddingLeft"] = UDim.new(0, 5);
+				Section["19"] = Instance.new("Frame", Section["17"]);
+				Section["19"]["BorderSizePixel"] = 0;
+				Section["19"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
+				Section["19"]["Size"] = UDim2.new(1, 0, 0, 1);
+				Section["19"]["Position"] = UDim2.new(0, 77, 0, -10);
+				Section["19"]["Name"] = [[Title]];
 				
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel
 				Section["1a"] = Instance.new("TextLabel", Section["19"]);
@@ -592,7 +588,7 @@ function Library:Init(InitData)
 				Section["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 				Section["1a"]["TextSize"] = 12;
 				Section["1a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1a"]["Size"] = UDim2.new(1, 0, 1, 0);
+				Section["1a"]["Size"] = UDim2.new(0.5, 0, 0, -6);
 				Section["1a"]["Text"] = Name;
 				Section["1a"]["BackgroundTransparency"] = 1;
 
