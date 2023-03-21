@@ -634,6 +634,8 @@ function Library:Init(InitData)
 			Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
 			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
 				Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
+				CenterSize = Section["1a"].TextBounds.X
+				Section["1a"].Position = UDim2.new(0.5, (CenterSize / 2) + 2, 0.95, 0)
 			end)
 
 
@@ -1406,7 +1408,7 @@ function Library:Init(InitData)
 					Box["5e"]["BorderSizePixel"] = 0;
 					Box["5e"]["BackgroundColor3"] = Color3.fromRGB(61, 61, 61);
 					Box["5e"]["Size"] = UDim2.new(1, -10, 0, 25);
-					Box["5e"]["Position"] = UDim2.new(1, -200, 1, -30);
+					Box["5e"]["Position"] = UDim2.new(1, -225, 1, -30);
 					Box["5e"]["Name"] = [[BoxBack]];
 
 					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.UICorner
