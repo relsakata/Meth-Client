@@ -579,7 +579,7 @@ function Library:Init(InitData)
 				Section["19"]["BorderSizePixel"] = 0;
 				Section["19"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
 				Section["19"]["Size"] = UDim2.new(1, 0, 0, 1);
-				Section["19"]["Position"] = UDim2.new(0, 77, 0, -10);
+				Section["19"]["Position"] = UDim2.new(0, 0, 0, 0);
 				Section["19"]["Name"] = [[Title]];
 				
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel
