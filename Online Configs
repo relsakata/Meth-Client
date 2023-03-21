@@ -635,7 +635,7 @@ function Library:Init(InitData)
 			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
 				Section["19"].Size = UDim2.new(Section["1a"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["1a"].Size.Y.Scale, Section["1a"].Size.Y.Offset)
 				CenterSize = Section["1a"].TextBounds.X
-				Section["1a"].Position = UDim2.new(0.5, CenterSize, 0, -4)
+				Section["1a"].Position = UDim2.new(0.5, CenterSize/2, 0, -4)
 			end)
 
 
