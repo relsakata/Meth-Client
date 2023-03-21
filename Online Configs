@@ -592,7 +592,7 @@ function Library:Init(InitData)
 				Section["1a"]["Text"] = Name;
 				Section["1a"]["BackgroundTransparency"] = 1;
 				Section["1a"]["Position"] = UDim2.new(0.5, 0, 0, -6)
-				Section["1a"].AnchorPoint = UDim.new(1,0)
+				Section["1a"].AnchorPoint = Vector2.new(1,0)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel.UICorner
 				Section["1b"] = Instance.new("UICorner", Section["1a"]);
