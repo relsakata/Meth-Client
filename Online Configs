@@ -588,9 +588,10 @@ function Library:Init(InitData)
 				Section["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 				Section["1a"]["TextSize"] = 12;
 				Section["1a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1a"]["Size"] = UDim2.new(0.5, 0, 0, -6);
+				Section["1a"]["Size"] = UDim2.new(1, 0, 1, 0);
 				Section["1a"]["Text"] = Name;
 				Section["1a"]["BackgroundTransparency"] = 1;
+				Section["1a"]["Position"] = UDim2.new(0.5, 0, 0, -6)
 
 				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel.UICorner
 				Section["1b"] = Instance.new("UICorner", Section["1a"]);
