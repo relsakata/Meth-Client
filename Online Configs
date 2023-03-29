@@ -1,1475 +1,408 @@
---services
-local players = game:GetService("Players")
-local tweenService = game:GetService("TweenService")
-local runService = game:GetService("RunService")
-local coreGui = game:GetService("CoreGui")
-local uis = game:GetService("UserInputService")
+if Nexus then Nexus:Stop() end
 
---vars
-local plr = players.LocalPlayer
-local mouse = plr:GetMouse()
-local viewport = workspace.CurrentCamera.ViewportSize
-local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+if not game:IsLoaded() then
+    task.delay(60, function()
+        if NoShutdown then return end
 
---main
-local Library = {}
+        if not game:IsLoaded() then
+            return game:Shutdown()
+        end
 
-function Library:validate(defaults, options)
-	for i,v in pairs(defaults) do
-		if options[i] == nil then
-			options[i] = v
-		end
-	end
-	return options
+        local Code = game:GetService'GuiService':GetErrorCode().Value
+
+        if Code >= Enum.ConnectionError.DisconnectErrors.Value then
+            return game:Shutdown()
+        end
+    end)
+    
+    game.Loaded:Wait()
 end
 
-function Library:tween(object, goal, callback)
-	local tween = tweenService:Create(object, tweenInfo, goal)
-	tween.Completed:Connect(callback or function() end)
-	tween:Play()
+local Nexus = {}
+local WSConnect = syn and WebsocketClient.new or Krnl and Krnl.WebSocket.connect or WebSocket and WebSocket.connect
+
+if not WSConnect then return end
+
+local TeleportService = game:GetService'TeleportService'
+local InputService = game:GetService'UserInputService'
+local HttpService = game:GetService'HttpService'
+local RunService = game:GetService'RunService'
+local GuiService = game:GetService'GuiService'
+local Players = game:GetService'Players'
+local LocalPlayer = Players.LocalPlayer if not LocalPlayer then repeat LocalPlayer = Players.LocalPlayer task.wait() until LocalPlayer end task.wait(0.5)
+
+local UGS = UserSettings():GetService'UserGameSettings'
+local OldVolume = UGS.MasterVolume
+
+LocalPlayer.OnTeleport:Connect(function(State)
+    if State == Enum.TeleportState.Started and Nexus.IsConnected then
+        Nexus:Stop() -- Apparently doesn't disconnect websockets on teleport so this has to be here
+    end
+end)
+
+local Signal = {} do
+    Signal.__index = Signal
+
+    function Signal.new()
+        local self = setmetatable({ _BindableEvent = Instance.new'BindableEvent' }, Signal)
+        
+        return self
+    end
+
+    function Signal:Connect(Callback)
+        assert(typeof(Callback) == 'function', 'function expected, got ' .. typeof(Callback))
+
+        return self._BindableEvent.Event:Connect(Callback)
+    end
+
+    function Signal:Fire(...)
+        self._BindableEvent:Fire(...)
+    end
+
+    function Signal:Wait()
+        return self._BindableEvent.Event:Wait()
+    end
+
+    function Signal:Disconnect()
+        if self._BindableEvent then
+            self._BindableEvent:Destroy()
+        end
+    end
 end
 
-function Library:Init(InitData)
-	local GUI = {
-		CurrentTab = nil,
-		TooltipEnabled = false,
-		ToolTipConnection = nil,
-		Enabled = true
-	}
-
-	--Main Render
-	do
-		-- StarterGui.My Library
-		GUI["1"] = Instance.new("ScreenGui", runService:IsStudio() and players.LocalPlayer.PlayerGui or coreGui);
-		GUI["1"]["Name"] = "SakataUi";
-		GUI["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
-
-		-- StarterGui.My Library.Main
-		GUI["2"] = Instance.new("Frame", GUI["1"]);
-		GUI["2"]["BorderSizePixel"] = 0;
-		GUI["2"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
-		GUI["2"]["Size"] = UDim2.new(0, 515, 0, 542);
-		GUI["2"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-		GUI["2"]["Position"] = (UDim2.new(0.28295907378196716, 0, 0.16084788739681244, 0))
-		GUI["2"]["Name"] = [[Main]];
-		GUI["2"]["ClipsDescendants"] = false;
-
-		-- StarterGui.My Library.Main.UICorner
-		GUI["3"] = Instance.new("UICorner", GUI["2"]);
-		GUI["3"]["CornerRadius"] = UDim.new(0, 10);
-
-		-- StarterGui.My Library.Main.TopBar
-		GUI["4"] = Instance.new("Frame", GUI["2"]);
-		GUI["4"]["ZIndex"] = 6;
-		GUI["4"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
-		GUI["4"]["Size"] = UDim2.new(1, 0, 0, 35);
-		GUI["4"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-		GUI["4"]["Name"] = [[TopBar]];
-		GUI["4"]["ClipsDescendants"] = true;
-
-		-- StarterGui.My Library.Main.TopBar.UICorner
-		GUI["5"] = Instance.new("UICorner", GUI["4"]);
-		GUI["5"]["CornerRadius"] = UDim.new(0, 10);
-
-		-- StarterGui.My Library.Main.TopBar.Extension
-		GUI["6"] = Instance.new("Frame", GUI["4"]);
-		GUI["6"]["BorderSizePixel"] = 0;
-		GUI["6"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
-		GUI["6"]["AnchorPoint"] = Vector2.new(0, 1);
-		GUI["6"]["Size"] = UDim2.new(1, 0, 0.5, 0);
-		GUI["6"]["Position"] = UDim2.new(0, 0, 1, 0);
-		GUI["6"]["Name"] = [[Extension]];
-
-		-- StarterGui.My Library.Main.TopBar.Title
-		GUI["7"] = Instance.new("TextLabel", GUI["4"]);
-		GUI["7"]["ZIndex"] = 6;
-		GUI["7"]["BorderSizePixel"] = 0;
-		GUI["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["7"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-		GUI["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-		GUI["7"]["TextSize"] = 14;
-		GUI["7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["7"]["Size"] = UDim2.new(0.5, 0, 1, 0);
-		GUI["7"]["BorderColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["7"]["Text"] = "MV2";
-		GUI["7"]["Name"] = [[Title]];
-		GUI["7"]["BackgroundTransparency"] = 1;
-
-		-- StarterGui.My Library.Main.TopBar.Title.UIPadding
-		GUI["8"] = Instance.new("UIPadding", GUI["7"]);
-		GUI["8"]["PaddingLeft"] = UDim.new(0, 12);
-
-		-- StarterGui.My Library.Main.TopBar.Title.UICorner
-		GUI["9"] = Instance.new("UICorner", GUI["7"]);
-
-		-- StarterGui.My Library.Main.TopBar.MoonNSun
-		GUI["a"] = Instance.new("ImageLabel", GUI["4"]);
-		GUI["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["a"]["Image"] = [[rbxassetid://10734897102]];
-		GUI["a"]["Size"] = UDim2.new(0, 25, 1, -10);
-		GUI["a"]["Name"] = [[MoonNSun]];
-		GUI["a"]["BackgroundTransparency"] = 1;
-		GUI["a"]["Position"] = UDim2.new(1, -30, 1, -30);
-
-		-- StarterGui.My Library.Main.DropShadowHolder
-		GUI["b"] = Instance.new("Frame", GUI["2"]);
-		GUI["b"]["ZIndex"] = 5;
-		GUI["b"]["BorderSizePixel"] = 0;
-		GUI["b"]["BackgroundTransparency"] = 1;
-		GUI["b"]["Size"] = UDim2.new(1, 0, 1, 0);
-		GUI["b"]["Name"] = [[DropShadowHolder]];
-
-		-- StarterGui.My Library.Main.DropShadowHolder.DropShadow
-		GUI["c"] = Instance.new("ImageLabel", GUI["b"]);
-		GUI["c"]["ZIndex"] = 0;
-		GUI["c"]["BorderSizePixel"] = 0;
-		GUI["c"]["SliceCenter"] = Rect.new(49, 49, 450, 450);
-		GUI["c"]["ScaleType"] = Enum.ScaleType.Slice;
-		GUI["c"]["ImageColor3"] = Color3.fromRGB(0, 0, 0);
-		GUI["c"]["ImageTransparency"] = 0.5;
-		GUI["c"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-		GUI["c"]["Image"] = [[rbxassetid://6014261993]];
-		GUI["c"]["Size"] = UDim2.new(1, 47, 1, 47);
-		GUI["c"]["Name"] = [[DropShadow]];
-		GUI["c"]["BackgroundTransparency"] = 1;
-		GUI["c"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
-		-- StarterGui.My Library.Main.ContentContainer
-		GUI["13"] = Instance.new("Frame", GUI["2"]);
-		GUI["13"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["13"]["BackgroundTransparency"] = 1;
-		GUI["13"]["Size"] = UDim2.new(1, -12, 1, -77);
-		GUI["13"]["Position"] = UDim2.new(0, 6, 0, 71);
-		GUI["13"]["Name"] = [[ContentContainer]];
-		GUI["13"]["ClipsDescendants"] = true;
-
-		-- StarterGui.My Library.Main.ContentContainer.Fade
-		GUI["6e"] = Instance.new("Frame", GUI["13"]);
-		GUI["6e"]["BorderSizePixel"] = 0;
-		GUI["6e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["6e"]["Size"] = UDim2.new(0, 512, 0, 26);
-		GUI["6e"]["Position"] = UDim2.new(0, -5, 0, 0);
-		GUI["6e"]["Name"] = [[Fade]];
-		GUI["6e"]["ZIndex"] = 10
-
-		-- StarterGui.My Library.Main.ContentContainer.Fade.UIGradient
-		GUI["6f"] = Instance.new("UIGradient", GUI["6e"]);
-		GUI["6f"]["Transparency"] = NumberSequence.new{NumberSequenceKeypoint.new(0.000, 0),NumberSequenceKeypoint.new(0.288, 0.41874998807907104),NumberSequenceKeypoint.new(0.327, 0.512499988079071),NumberSequenceKeypoint.new(0.587, 0.7374999523162842),NumberSequenceKeypoint.new(0.793, 0.8687499761581421),NumberSequenceKeypoint.new(0.995, 1),NumberSequenceKeypoint.new(1.000, 1)};
-		GUI["6f"]["Rotation"] = 90;
-		GUI["6f"]["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(43, 43, 43)),ColorSequenceKeypoint.new(0.329, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(0.490, Color3.fromRGB(44, 44, 44)),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(43, 43, 43))};
-
-	end
-
-	local Keybind = Enum.KeyCode["LeftControl"]
-
-	if InitData then
-		if InitData["WindowName"] then
-			GUI["7"].Text = InitData["WindowName"]
-		else
-			GUI["7"].Text = "Script"
-		end
-		if InitData["Keybind"] then
-			Keybind = Enum.KeyCode[(type(InitData["Keybind"]) == "userdata" and InitData["Keybind"].Name) or (type(InitData["Keybind"]) == "string" and InitData["Keybind"])]
-		end
-		if InitData["Advertisement"] then
-			local __ = Instance.new("Frame")
-
-			__.Name = ""
-			__.Parent = GUI["1"]
-			__.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			__.BackgroundTransparency = 1.000
-			__.BorderSizePixel = 0
-			__.Size = UDim2.new(1, 0, 1, 0)
-			__.ZIndex = -1
-
-			for I = 0, 3 do
-				local ___ = Instance.new("TextLabel")
-				___.Name = ""
-				___.Parent = __
-				___.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				___.BackgroundTransparency = 1.000
-				___.BorderSizePixel = 0
-				___.Position = UDim2.new(0, 0, 0.25 * I, 0)
-				___.Size = UDim2.new(1, 0, 0.25, 0)
-				___.Font = Enum.Font.GothamBold
-				___.Text = "Buy Macro V2 Premium!   Buy Macro V2 Premium!"
-				___.TextColor3 = Color3.fromRGB(255, 255, 255)
-				___.TextSize = 70.000
-				___.TextWrapped = true
-			end
-		end
-	end
-
-	uis.InputBegan:Connect(function(Input, GPE)
-		if Input.KeyCode == Keybind then
-			if not GUI.Enabled then
-				GUI["2"].ClipsDescendants = true
-				GUI["1"].Enabled = true
-				GUI["2"]["Size"] = UDim2.new(0, 0, 0, 0)
-				GUI["2"]:TweenSize(UDim2.new(0, 515, 0, 542),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine,0.25,true)
-				task.wait(0.2)
-				GUI.Enabled = true
-				GUI["2"].ClipsDescendants = false
-			else
-				GUI["2"].ClipsDescendants = true
-				GUI["2"]:TweenSize(UDim2.new(0, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine,0.25,true)
-				task.wait(0.2)
-				GUI.Enabled = false
-				GUI["1"].Enabled = false
-				GUI["2"].ClipsDescendants = false
-			end
-		end
-	end)
-
-	do
-		-- StarterGui.My Library.ToolTips
-		GUI["70"] = Instance.new("Frame", GUI["1"]);
-		GUI["70"]["ZIndex"] = 200;
-		GUI["70"]["BorderSizePixel"] = 0;
-		GUI["70"]["BackgroundColor3"] = Color3.fromRGB(44, 44, 44);
-		GUI["70"]["Size"] = UDim2.new(0, 200, 0, 30);
-		GUI["70"]["ClipsDescendants"] = true;
-		GUI["70"]["Position"] = UDim2.new(0.450112521648407, 0, 0.575846791267395, 0);
-		GUI["70"]["Visible"] = false;
-		GUI["70"]["Name"] = [[ToolTips]];
-
-		-- StarterGui.My Library.ToolTips.UICorner
-		GUI["71"] = Instance.new("UICorner", GUI["70"]);
-
-
-		-- StarterGui.My Library.ToolTips.TextLabel
-		GUI["72"] = Instance.new("TextLabel", GUI["70"]);
-		GUI["72"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["72"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-		GUI["72"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-		GUI["72"]["TextSize"] = 5;
-		GUI["72"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-		GUI["72"]["Size"] = UDim2.new(1, 0, 1, 0);
-		GUI["72"]["Text"] = [[ToolTips]];
-		GUI["72"]["BackgroundTransparency"] = 1;
-
-		-- StarterGui.My Library.ToolTips.TextLabel.UICorner
-		GUI["73"] = Instance.new("UICorner", GUI["72"]);
-
-
-		-- StarterGui.My Library.ToolTips.UIPadding
-		GUI["74"] = Instance.new("UIPadding", GUI["70"]);
-		GUI["74"]["PaddingLeft"] = UDim.new(0, 10);
-
-		-- StarterGui.My Library.ToolTips.UIStroke
-		GUI["75"] = Instance.new("UIStroke", GUI["70"]);
-		GUI["75"]["Color"] = Color3.fromRGB(150, 150, 150);
-	end
-
-	function ToolTipActivate(Text)
-		GUI.TooltipEnabled = true
-		Text = Text or "No Text"
-		GUI["70"].Size = UDim2.new(0, 0, 0, 0)
-		GUI["70"].Visible = true
-		GUI["70"]:TweenSize(UDim2.new(0, 200, 0, 30), Enum.EasingDirection.InOut, Enum.EasingStyle.Sine, 0.25, true)
-		GUI["72"]["Text"] = tostring(Text)
-		if GUI.ToolTipConnection == nil then
-			GUI.ToolTipConnection = runService.RenderStepped:Connect(function()
-				GUI["70"].Position = UDim2.new(0, mouse.X, 0, mouse.Y-20)
-			end)
-		end
-
-	end
-
-	function ToolTipDeactivate()
-		if not GUI.TooltipEnabled then return end
-		GUI.TooltipEnabled = false
-		GUI["70"]:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Sine, 0.25, true)
-		GUI["70"].Visible = false
-		if GUI.ToolTipConnection then
-			GUI.ToolTipConnection:Disconnect()
-			GUI.ToolTipConnection = nil
-		end
-	end
-
-	--Navigation
-	do
-		-- StarterGui.My Library.Main.Navigation
-		GUI["d"] = Instance.new("ScrollingFrame", GUI["2"]);
-		GUI["d"]["Active"] = true;
-		GUI["d"]["BorderSizePixel"] = 0;
-		GUI["d"]["CanvasSize"] = UDim2.new(1, 0, 0, 0);
-		GUI["d"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
-		GUI["d"]["Size"] = UDim2.new(1, 0, 1, -509);
-		GUI["d"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-		GUI["d"]["ScrollBarThickness"] = 3;
-		GUI["d"]["Position"] = UDim2.new(0, 0, 0, 35);
-		GUI["d"]["Name"] = [[Navigation]];
-		GUI["d"]["ClipsDescendants"] = true;
-
-		-- StarterGui.My Library.Main.Navigation.UIListLayout
-		GUI["e"] = Instance.new("UIListLayout", GUI["d"]);
-		GUI["e"]["VerticalAlignment"] = Enum.VerticalAlignment.Center;
-		GUI["e"]["FillDirection"] = Enum.FillDirection.Horizontal;
-		GUI["e"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-		-- StarterGui.My Library.Main.Navigation.UIPadding
-		GUI["f"] = Instance.new("UIPadding", GUI["d"]);
-	end
-
-	local function Drag(Frame, Speed)
-		local Dragging;
-		local DragStart;
-		local FrameStart;
-		local DragInput;
-		local DragSpeed = Speed
-
-		local function Update(Input)
-			local Delta = Input.Position - DragStart
-			local NewPosition = UDim2.new(FrameStart.X.Scale, FrameStart.X.Offset + Delta.X, FrameStart.Y.Scale, FrameStart.Y.Offset + Delta.Y)
-
-			game:GetService("TweenService"):Create(GUI["2"], TweenInfo.new(DragSpeed, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Position = NewPosition}):Play()
-		end
-
-		Frame.InputBegan:Connect(function(Input)
-			if Input.UserInputType == Enum.UserInputType["MouseButton1"] then
-				Dragging = true
-				DragStart = Input.Position
-				FrameStart = GUI["2"].Position
-
-				Input.Changed:Connect(function()
-					if Input.UserInputState == Enum.UserInputState["End"] then
-						Dragging = false
-					end
-				end)
-			end
-		end)
-
-		Frame.InputChanged:Connect(function(Input)
-			if Input.UserInputType == Enum.UserInputType["MouseMovement"] then
-				DragInput = Input
-			end
-		end)
-
-		game:GetService("UserInputService").InputChanged:Connect(function(Input)
-			if Input == DragInput and Dragging then
-				Update(Input)
-			end
-		end)
-	end
-
-	Drag(GUI["4"], 0.3)
-
-	GUI["d"].CanvasSize = UDim2.new(0, GUI["e"].AbsoluteContentSize.X + 250, 0, 0)
-
-	GUI["d"]:FindFirstChild("UIListLayout"):GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		GUI["d"].CanvasSize = UDim2.new(0, GUI["e"].AbsoluteContentSize.X + (GUI["f"].PaddingLeft.Offset * 2), 0, 0)
-	end)
-
-	function GUI:Tab(Name)
-		Name = Name or "Default Name"
-
-		local Tab = {
-			Hover = false,
-			Active = false,
-			FadeRemove = nil
-		}
-		--Render
-
-		do
-			-- StarterGui.My Library.Main.ContentContainer.MainTab
-			Tab["14"] = Instance.new("ScrollingFrame", GUI["13"]);
-			Tab["14"]["Active"] = true;
-			Tab["14"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			Tab["14"]["BackgroundTransparency"] = 1;
-			Tab["14"]["Size"] = UDim2.new(1, 0, 1, 0);
-			Tab["14"]["ScrollBarThickness"] = 3;
-			Tab["14"]["Name"] = Name;
-			Tab["14"]["Visible"] = false;
-			Tab["14"]["CanvasSize"] = UDim2.new(0, 0, 4, 0)
-			-- StarterGui.My Library.Main.Border
-			GUI["6d"] = Instance.new("Frame", GUI["13"]);
-			GUI["6d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			GUI["6d"]["Size"] = UDim2.new(0, 1, 1, 0);
-			GUI["6d"]["Position"] = UDim2.new(0.5, -1, 0, 0);
-			GUI["6d"]["Name"] = [[Border]];
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container
-			Tab["15"] = Instance.new("Frame", Tab["14"]);
-			Tab["15"]["BorderSizePixel"] = 0;
-			Tab["15"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
-			Tab["15"]["BackgroundTransparency"] = 1;
-			Tab["15"]["Size"] = UDim2.new(1, 0, 1, 0);
-			Tab["15"]["Name"] = [[Container]];
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide
-			Tab["16"] = Instance.new("Frame", Tab["15"]);
-			Tab["16"]["BorderSizePixel"] = 0;
-			Tab["16"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			Tab["16"]["BackgroundTransparency"] = 1;
-			Tab["16"]["Size"] = UDim2.new(1, -254, 1, 0);
-			Tab["16"]["Name"] = [[LeftSide]];
-
-			-- StarterGui.My Library.Main.Navigation.NotSelected
-			Tab["11"] = Instance.new("TextLabel", GUI["d"]);
-			Tab["11"]["ZIndex"] = 10;
-			Tab["11"]["BorderSizePixel"] = 0;
-			Tab["11"]["BackgroundColor3"] = Color3.fromRGB(75, 75, 75);
-			Tab["11"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-			Tab["11"]["TextSize"] = 12;
-			Tab["11"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-			Tab["11"]["Size"] = UDim2.new(0, 100, 1, 0);
-			Tab["11"]["BorderColor3"] = Color3.fromRGB(255, 255, 255);
-			Tab["11"]["Text"] = Name;
-			Tab["11"]["Name"] = Name;
-			Tab["11"]["Position"] = UDim2.new(0, 423, 0, 173);
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.UIPadding
-			Tab["65"] = Instance.new("UIPadding", Tab["16"]);
-			Tab["65"]["PaddingTop"] = UDim.new(0, 5);
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.UIListLayout
-			Tab["66"] = Instance.new("UIListLayout", Tab["16"]);
-			Tab["66"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
-			Tab["66"]["Padding"] = UDim.new(0, 3);
-			Tab["66"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.RightSide
-			Tab["67"] = Instance.new("Frame", Tab["15"]);
-			Tab["67"]["BorderSizePixel"] = 0;
-			Tab["67"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-			Tab["67"]["BackgroundTransparency"] = 1;
-			Tab["67"]["Size"] = UDim2.new(1, -254, 1, 0);
-			Tab["67"]["Position"] = UDim2.new(0, 253, 0, 0);
-			Tab["67"]["Name"] = [[RightSide]];
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.RightSide.UIPadding
-			Tab["68"] = Instance.new("UIPadding", Tab["67"]);
-			Tab["68"]["PaddingTop"] = UDim.new(0, 5);
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.RightSide.UIListLayout
-			Tab["69"] = Instance.new("UIListLayout", Tab["67"]);
-			Tab["69"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
-			Tab["69"]["Padding"] = UDim.new(0, 3);
-			Tab["69"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.UIAspectRatioConstraint
-			Tab["6a"] = Instance.new("UIAspectRatioConstraint", Tab["15"]);
-			Tab["6a"]["AspectRatio"] = 1.0818030834197998;
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.UIPadding
-			Tab["6b"] = Instance.new("UIPadding", Tab["15"]);
-			Tab["6b"]["PaddingTop"] = UDim.new(0, 10);
-			Tab["6b"]["PaddingRight"] = UDim.new(0, 5);
-			Tab["6b"]["PaddingBottom"] = UDim.new(0, 10);
-			Tab["6b"]["PaddingLeft"] = UDim.new(0, 5);
-
-			-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.UIListLayout
-			Tab["6c"] = Instance.new("UIListLayout", Tab["15"]);
-			Tab["6c"]["FillDirection"] = Enum.FillDirection.Horizontal;
-			Tab["6c"]["Padding"] = UDim.new(0, 15);
-			Tab["6c"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-		end
-
-		function Tab:Set(NewName)
-			Tab["11"]["Text"] = NewName;
-			Tab["11"]["Name"] = NewName;
-		end
-
-		function Tab:Activate()
-			if not Tab.Active then
-				if GUI.CurrentTab ~= nil then
-					GUI.CurrentTab:Deactivate()
-				end
-				Tab.Active = true
-
-				Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-				--Tab["14"]:TweenPosition(UDim2.new(0, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
-				GUI.CurrentTab = Tab
-				Tab["14"]["Visible"] = true;
-				if Tab.FadeRemove == nil then
-					Tab.FadeRemove = runService.RenderStepped:Connect(function()
-						if Tab["14"].CanvasPosition.Y == 0 then
-							Library:tween(GUI["6e"], {Transparency = 1})
-						else
-							Library:tween(GUI["6e"], {Transparency = 0})
-						end
-					end)
-				end
-			end
-		end
-
-		function Tab:Deactivate()
-			if Tab.Active then
-				Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(75,75,75)})
-				--Tab["14"]:TweenPosition(UDim2.new(-1, 0, 0, 0),Enum.EasingDirection.InOut,Enum.EasingStyle.Sine, 1,true)
-				Tab.Active = false
-				Tab["14"]["Visible"] = false
-				Tab.Hover = false
-				--Tab["14"].Position = UDim2.new(1, 0, 0, 0)
-				if Tab.FadeRemove then
-					Tab.FadeRemove:Disconnect()
-					Tab.FadeRemove = nil
-				end
-
-			end
-		end
-
-		--Logic
-		do
-			Tab["11"].MouseEnter:Connect(function()
-				Tab.Hover = true
-
-				if not Tab.Active then
-					Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-				end
-			end)
-
-			Tab["11"].MouseLeave:Connect(function()
-				Tab.Hover = false
-
-				if not Tab.Active then
-					Library:tween(Tab["11"], {BackgroundColor3 = Color3.fromRGB(75,75,75)})
-				end
-			end)
-
-			uis.InputBegan:Connect(function(input, gpe)
-
-				if input.UserInputType == Enum.UserInputType.MouseButton1 then
-					if Tab.Hover then
-						Tab:Activate()
-					end
-				end
-			end)
-		end
-
-		if not GUI.CurrentTab then
-			Tab:Activate()
-		end
-
-		local LS = Tab["16"]
-		local RS = Tab["67"]
-
-		function GetSide()
-			if Tab["66"].AbsoluteContentSize.Y <= Tab["69"].AbsoluteContentSize.Y then
-				return LS
-			else
-				return RS
-			end
-		end
-
-		function Tab:Section(Name)
-			Name = Name or "Unnamed"
-
-			local Section = {}
-
-			do
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1
-				Section["17"] = Instance.new("Frame", GetSide());
-				Section["17"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["17"]["BackgroundTransparency"] = 1;
-				Section["17"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Section["17"]["Name"] = Name;
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UIStroke
-				Section["18"] = Instance.new("UIStroke", Section["17"]);
-				Section["18"]["Color"] = Color3.fromRGB(255, 255, 255);
-				
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIListLayout
-				Section["1f"] = Instance.new("UIListLayout", Section["17"]);
-				Section["1f"]["Padding"] = UDim.new(0, -5);
-				Section["1f"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title
-				Section["19"] = Instance.new("Frame", Section["17"]);
-				Section["19"]["BorderSizePixel"] = 0;
-				Section["19"]["BackgroundColor3"] = Color3.fromRGB(78, 78, 78);
-				Section["19"]["Size"] = UDim2.new(1, 0, 0, 1);
-				Section["19"]["Position"] = UDim2.new(0, 0, 0, 0);
-				Section["19"]["Name"] = [[Title]];
-				
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel
-				Section["1a"] = Instance.new("TextLabel", Section["19"]);
-				Section["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-				Section["1a"]["TextSize"] = 12;
-				Section["1a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1a"]["Size"] = UDim2.new(0, 0, 0, 20);
-				Section["1a"]["Text"] = Name;
-				Section["1a"]["BackgroundTransparency"] = 1;
-				Section["1a"]["Position"] = UDim2.new(0.5, 0, 0, -6)
-				Section["1a"].AnchorPoint = Vector2.new(1,0)
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.TextLabel.UICorner
-				Section["1b"] = Instance.new("UICorner", Section["1a"]);
-
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Title.UICorner
-				Section["1c"] = Instance.new("UICorner", Section["19"]);
-
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents
-				Section["1d"] = Instance.new("Frame", Section["17"]);
-				Section["1d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-				Section["1d"]["BackgroundTransparency"] = 1;
-				Section["1d"]["Size"] = UDim2.new(1, 0, 1, 0);
-				Section["1d"]["Name"] = [[Contents]];
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIPadding
-				Section["1e"] = Instance.new("UIPadding", Section["1d"]);
-				Section["1e"]["PaddingTop"] = UDim.new(0, 10);
-				Section["1e"]["PaddingRight"] = UDim.new(0, 5);
-				Section["1e"]["PaddingBottom"] = UDim.new(0, 5);
-				Section["1e"]["PaddingLeft"] = UDim.new(0, 5);
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UIListLayout
-				Section["1f"] = Instance.new("UIListLayout", Section["1d"]);
-				Section["1f"]["Padding"] = UDim.new(0, 5);
-				Section["1f"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.UICorner
-				Section["20"] = Instance.new("UICorner", Section["1d"]);
-
-				-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.UICorner
-				Section["64"] = Instance.new("UICorner", Section["17"]);
-			end
-			Section["17"].Size = UDim2.new(0.99, 0, 0, Section["1f"].AbsoluteContentSize.Y + Section["1f"].Padding.Offset)
-
-			Section["1f"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-				Section["17"].Size = UDim2.new(0.99, 0, 0, Section["1f"].AbsoluteContentSize.Y + (Section["1f"].Padding.Offset+15))
-			end)
-			Section["19"].Size = UDim2.new(Section["19"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["19"].Size.Y.Scale, Section["19"].Size.Y.Offset)
-			Section["1a"]:GetPropertyChangedSignal("Text"):Connect(function()
-				Section["19"].Size = UDim2.new(Section["1a"].Size.X.Scale, Section["1a"].TextBounds.X + 4, Section["1a"].Size.Y.Scale, Section["1a"].Size.Y.Offset)
-				CenterSize = Section["1a"].TextBounds.X
-				Section["1a"].Position = UDim2.new(0.5, CenterSize/2, 0, -7)
-			end)
-
-
-			function Section:Label(Name)
-				Name = Name or "No Text Assigned"
-
-				local Label = {
-					Tag = "Label"
-				}
-
-				do
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Label
-					Label["29"] = Instance.new("Frame", Section["1d"]);
-					Label["29"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Label["29"]["Size"] = UDim2.new(1, 0, 0, 30);
-					Label["29"]["Name"] = Name;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Label.Label
-					Label["2a"] = Instance.new("TextLabel", Label["29"]);
-					Label["2a"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
-					Label["2a"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Label["2a"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Label["2a"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Label["2a"]["TextTransparency"] = 0.18000000715255737;
-					Label["2a"]["TextSize"] = 12;
-					Label["2a"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Label["2a"]["Size"] = UDim2.new(1, 150, 1, 0);
-					Label["2a"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Label["2a"]["Name"] = Name;
-					Label["2a"]["BackgroundTransparency"] = 0.5;
-					Label["2a"]["Position"] = UDim2.new(0, 10, 0, 0);
-					Label["2a"]["Text"] = Name;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Label.Label.UICorner
-					Label["2b"] = Instance.new("UICorner", Label["2a"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Label.UICorner
-					Label["2c"] = Instance.new("UICorner", Label["29"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Label.UIStroke
-					Label["2d"] = Instance.new("UIStroke", Label["29"]);
-					Label["2d"]["Color"] = Color3.fromRGB(130, 130, 130);
-				end
-
-				function Label:Set(NewName)
-					if not NewName then return end
-					Label["29"]["Name"] = NewName;
-					Label["2a"]["Text"] = NewName;
-					Label["2a"]["Name"] = NewName;
-				end
-
-				function Label:Tooltip(Text)
-					Label["29"].MouseEnter:Connect(function()
-						ToolTipActivate(Text)
-					end)
-
-					Label["29"].MouseLeave:Connect(function()
-						ToolTipDeactivate()
-					end)
-				end
-
-				return Label
-			end
-
-			function Section:Button(Name, Callback)
-				Callback = Callback or function() end
-
-				local Button = {
-					Hover = false,
-					Clicked = false,
-					Tag = "Button"
-				}
-
-				do
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button
-					Button["21"] = Instance.new("Frame", Section["1d"]);
-					Button["21"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Button["21"]["Size"] = UDim2.new(1, 0, 0, 31);
-					Button["21"]["Name"] = Name;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.Button
-					Button["22"] = Instance.new("TextLabel", Button["21"]);
-					Button["22"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
-					Button["22"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Button["22"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Button["22"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Button["22"]["TextTransparency"] = 0.18000000715255737;
-					Button["22"]["TextSize"] = 12;
-					Button["22"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Button["22"]["Size"] = UDim2.new(1, 165, 1, 0);
-					Button["22"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Button["22"]["Text"] = Name;
-					Button["22"]["Name"] = Name;
-					Button["22"]["BackgroundTransparency"] = 0.5;
-					Button["22"]["Position"] = UDim2.new(0, 10, 0, 0);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.Button.UICorner
-					Button["23"] = Instance.new("UICorner", Button["22"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.Icon
-					Button["24"] = Instance.new("ImageLabel", Button["21"]);
-					Button["24"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Button["24"]["Image"] = [[rbxassetid://10734898355]];
-					Button["24"]["Size"] = UDim2.new(1, -206, 1, -10);
-					Button["24"]["Name"] = [[Icon]];
-					Button["24"]["BackgroundTransparency"] = 1;
-					Button["24"]["Position"] = UDim2.new(0.8460000157356262, 0, 0, 5);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.Icon.UICorner
-					Button["25"] = Instance.new("UICorner", Button["24"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.Icon.UIAspectRatioConstraint
-					Button["26"] = Instance.new("UIAspectRatioConstraint", Button["24"]);
-					Button["26"]["AspectRatio"] = 1.0136394500732422;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.UICorner
-					Button["27"] = Instance.new("UICorner", Button["21"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Button.UIStroke
-					Button["28"] = Instance.new("UIStroke", Button["21"]);
-					Button["28"]["Color"] = Color3.fromRGB(130, 130, 130);
-				end
-
-				function Button:Set(NewName)
-					Button["21"]["Name"] = NewName;
-					Button["22"]["Text"] = NewName;
-					Button["22"]["Name"] = NewName;
-				end
-
-				function Button:ButtonEffect()
-					Button["21"].BackgroundColor3 = Color3.fromRGB(205,205,205)
-					Button["22"].BackgroundColor3 = Color3.fromRGB(205,205,205)
-
-					Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-					Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-
-					Callback()
-				end
-
-				Button["21"].MouseEnter:Connect(function()
-					Button.Hover = true
-					if not Button.Clicked then
-						Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-						Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-					end
-				end)
-
-				Button["21"].MouseLeave:Connect(function()
-					Button.Hover = false
-
-					if not Button.Clicked then
-						Library:tween(Button["21"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-						Library:tween(Button["22"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-					end
-				end)
-
-				uis.InputBegan:Connect(function(input, gpe)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
-						if Button.Hover then
-							Button:ButtonEffect()
-						end
-					end
-				end)
-
-				function Button:Tooltip(Text)
-					Button["21"].MouseEnter:Connect(function()
-						ToolTipActivate(Text)
-					end)
-
-					Button["21"].MouseLeave:Connect(function()
-						ToolTipDeactivate()
-					end)
-				end
-
-				return Button
-			end
-
-			function Section:Toggle(Name, Callback, State)
-				Name = Name or "Toggle"
-				State = State or false
-				Callback = Callback or function(State) end
-
-				local Toggle = {
-					State = State or false,
-					Hover = false,
-					Tag = "Toggle"
-				}
-
-				do
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive
-					Toggle["50"] = Instance.new("Frame", Section["1d"]);
-					Toggle["50"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Toggle["50"]["Size"] = UDim2.new(0, 229, 0, 27);
-					Toggle["50"]["ClipsDescendants"] = true;
-					Toggle["50"]["Position"] = UDim2.new(0, 0, 0.40569886565208435, 0);
-					Toggle["50"]["Name"] = Name;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.Toggle
-					Toggle["51"] = Instance.new("TextLabel", Toggle["50"]);
-					Toggle["51"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
-					Toggle["51"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Toggle["51"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Toggle["51"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Toggle["51"]["TextTransparency"] = 0.18000000715255737;
-					Toggle["51"]["TextSize"] = 12;
-					Toggle["51"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Toggle["51"]["Size"] = UDim2.new(0, 165, 0, 20);
-					Toggle["51"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Toggle["51"]["Text"] = Name;
-					Toggle["51"]["Name"] = Name;
-					Toggle["51"]["BackgroundTransparency"] = 0.5;
-					Toggle["51"]["Position"] = UDim2.new(0.8460000157356262, -180, 0, 4);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.Toggle.UICorner
-					Toggle["52"] = Instance.new("UICorner", Toggle["51"]);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.UICorner
-					Toggle["53"] = Instance.new("UICorner", Toggle["50"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.UIStroke
-					Toggle["54"] = Instance.new("UIStroke", Toggle["50"]);
-					Toggle["54"]["Color"] = Color3.fromRGB(130, 130, 130);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.CheckmarkHolder
-					Toggle["55"] = Instance.new("Frame", Toggle["50"]);
-					Toggle["55"]["ZIndex"] = 20;
-					Toggle["55"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Toggle["55"]["Size"] = UDim2.new(0, 27, 1, 0);
-					Toggle["55"]["Position"] = UDim2.new(1, -27, 0, 0);
-					Toggle["55"]["Name"] = [[CheckmarkHolder]];
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.ToggleInactive.CheckmarkHolder.UICorner
-					Toggle["56"] = Instance.new("UICorner", Toggle["55"]);
-				end
-				function Toggle:ButtonEffect(StateTo)
-					if StateTo == nil then
-						if Toggle.State then
-							Toggle.State = false
-							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
-						else
-							Toggle.State = true
-							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
-						end
-					else
-						if StateTo == true then
-							Toggle.State = true
-							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(181, 255, 181)})
-						else
-							Toggle.State = false
-							Library:tween(Toggle["55"], {BackgroundColor3 = Color3.fromRGB(255, 255, 255)})
-						end
-					end
-				end
-
-				Toggle["50"].MouseEnter:Connect(function()
-					Toggle.Hover = true
-
-					Library:tween(Toggle["50"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-					Library:tween(Toggle["51"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-				end)
-
-				Toggle["50"].MouseLeave:Connect(function()
-					Toggle.Hover = false
-
-					Library:tween(Toggle["50"], {BackgroundColor3 = Color3.fromRGB(85,85,85)})
-					Library:tween(Toggle["51"], {BackgroundColor3 = Color3.fromRGB(85,85,85)})
-				end)
-
-				uis.InputBegan:Connect(function(input, gpe)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
-						if Toggle.Hover then
-							Toggle:ButtonEffect()
-							Callback(State)
-						end
-					end
-				end)
-
-				function Toggle:Set(StateTo)
-					Toggle:ButtonEffect(StateTo)
-				end
-
-				function Toggle:Tooltip(Text)
-					Toggle["50"].MouseEnter:Connect(function()
-						ToolTipActivate(Text)
-					end)
-
-					Toggle["50"].MouseLeave:Connect(function()
-						ToolTipDeactivate()
-					end)
-				end
-
-				return Toggle
-			end
-
-			function Section:Slider(Name, Callback, Options)
-				Name = Name or "Unnamed"
-				Callback = Callback or function() end
-				Options = Library:validate({
-					Default = 0,
-					Min = 0,
-					Max = 1,
-					Precise = false
-				}, Options or {})
-
-				local Slider = {
-					Hover = false,
-					MouseDown = false,
-					Connection = nil,
-					BarHover = false,
-					Tag = "Slider"
-				}
-
-				do
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider
-					Slider["2e"] = Instance.new("Frame", Section["1d"]);
-					Slider["2e"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Slider["2e"]["Size"] = UDim2.new(1, 0, 0, 46);
-					Slider["2e"]["Name"] = Name;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.Slider
-					Slider["2f"] = Instance.new("TextLabel", Slider["2e"]);
-					Slider["2f"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
-					Slider["2f"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Slider["2f"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Slider["2f"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Slider["2f"]["TextTransparency"] = 0.18000000715255737;
-					Slider["2f"]["TextSize"] = 12;
-					Slider["2f"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Slider["2f"]["Size"] = UDim2.new(1, 130, 1, -30);
-					Slider["2f"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Slider["2f"]["Text"] = Name;
-					Slider["2f"]["Name"] = Name;
-					Slider["2f"]["BackgroundTransparency"] = 0.5;
-					Slider["2f"]["Position"] = UDim2.new(0, 10, 0, 4);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.Slider.UICorner
-					Slider["30"] = Instance.new("UICorner", Slider["2f"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.Slider.UIAspectRatioConstraint
-					Slider["31"] = Instance.new("UIAspectRatioConstraint", Slider["2f"]);
-					Slider["31"]["AspectRatio"] = 15.025296211242676;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.UICorner
-					Slider["32"] = Instance.new("UICorner", Slider["2e"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.UIStroke
-					Slider["33"] = Instance.new("UIStroke", Slider["2e"]);
-					Slider["33"]["Color"] = Color3.fromRGB(130, 130, 130);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.SliderBack
-					Slider["34"] = Instance.new("Frame", Slider["2e"]);
-					Slider["34"]["BorderSizePixel"] = 0;
-					Slider["34"]["BackgroundColor3"] = Color3.fromRGB(61, 61, 61);
-					Slider["34"]["Size"] = UDim2.new(1, -30, 0, 6);
-					Slider["34"]["Position"] = UDim2.new(1, -215, 1, -15);
-					Slider["34"]["Name"] = [[SliderBack]];
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.SliderBack.UICorner
-					Slider["35"] = Instance.new("UICorner", Slider["34"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.SliderBack.UIStroke
-					Slider["36"] = Instance.new("UIStroke", Slider["34"]);
-					Slider["36"]["Color"] = Color3.fromRGB(157, 157, 157);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.SliderBack.Draggable
-					Slider["37"] = Instance.new("Frame", Slider["34"]);
-					Slider["37"]["BorderSizePixel"] = 0;
-					Slider["37"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Slider["37"]["Size"] = UDim2.new(0.5, 0, 1, 0);
-					Slider["37"]["Name"] = [[Draggable]];
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.SliderBack.Draggable.UICorner
-					Slider["38"] = Instance.new("UICorner", Slider["37"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Slider.TextBox
-					Slider["39"] = Instance.new("TextBox", Slider["2e"]);
-					Slider["39"]["BorderSizePixel"] = 0;
-					Slider["39"]["TextSize"] = 14;
-					Slider["39"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Slider["39"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Slider["39"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Slider["39"]["BackgroundTransparency"] = 1;
-					Slider["39"]["Size"] = UDim2.new(0, 40, 1, -30);
-					Slider["39"]["Text"] = Options.Default;
-					Slider["39"]["Position"] = UDim2.new(0, 185, 0, 3);
-					Slider["39"]["ClearTextOnFocus"] = false;
-				end
-
-				local Default, Min, Max, Precise = 0, 0, 1, false
-
-				if Options.Default then
-					Default = Options.Default
-				end
-				if Options.Min or Options.Minimum then
-					Min = ((Options.Min ~= nil and Options.Min) or (Options.Minimum ~= nil and Options.Minimum))
-				end
-				if Options.Max or Options.Maximum then
-					Max = ((Options.Max ~= nil and Options.Max) or (Options.Maximum ~= nil and Options.Maximum))
-				end
-				if Options.Precise then
-					Precise = Options.Precise
-				end
-				if Precise then
-					Slider["39"]["Text"] = string.format("%.03f", Default)
-				else
-					Slider["39"]["Text"] = Default
-				end
-
-				function Slider:Set(Value)
-					if Value == nil then
-						Value = Min
-					end
-					Slider["39"]["Text"] = tostring(Value)
-					local Percentage = math.clamp((Value - Options.Min) / (Options.Max - Options.Min), 0, 1)
-					local Value = ((Options.Max - Options.Min) * Percentage) + Options.Min
-					Slider["37"]:TweenSize(UDim2.new(Percentage, 0, 1, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.2, true)
-					Callback(tonumber(Slider["39"]["Text"]))
-				end
-				function Slider:SetValue()
-					local Percentage = math.clamp((mouse.X - Slider["34"].AbsolutePosition.X) / (Slider["34"].AbsoluteSize.X), 0, 1)
-					local value = math.floor(((Options.Max - Options.Min)* Percentage) + Options.Min)
-
-					Slider["39"]["Text"] = tostring(value)
-					game:GetService("TweenService"):Create(Slider["37"], TweenInfo.new(0.2, Enum.EasingStyle["Quint"], Enum.EasingDirection["Out"]), {Size = UDim2.new(Percentage, 0, 1, 0)}):Play()
-					Callback(tonumber(Slider["39"]["Text"]))
-				end
-
-				function Slider:GetValue()
-					return tonumber(Slider["39"]["Text"])
-				end
-
-				--Logic
-				do
-					Slider["34"].MouseEnter:Connect(function()
-						Slider.BarHover = true
-						Library:tween(Slider["34"], {BackgroundColor3 = Color3.fromRGB(105,105,105)})
-					end)
-					Slider["34"].MouseLeave:Connect(function()
-						Slider.BarHover = false
-						Library:tween(Slider["34"], {BackgroundColor3 = Color3.fromRGB(61, 61, 61)})
-					end)
-					Slider["2e"].MouseEnter:Connect(function()
-						Slider.Hover = true
-					end)
-
-					Slider["2e"].MouseLeave:Connect(function()
-						Slider.Hover = false
-					end)
-
-					uis.InputBegan:Connect(function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 and Slider.BarHover then
-							if not Slider.Connection then
-								Slider.Connection = runService.RenderStepped:Connect(function()
-									Slider:SetValue()
-								end)
-							end
-						end
-					end)
-
-					uis.InputEnded:Connect(function(input, gpe)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 then
-							Slider.MouseDown = false
-							if Slider.Connection then Slider.Connection:Disconnect() end
-							Slider.Connection = nil
-						end
-					end)
-				end
-
-				function Slider:Tooltip(Text)
-					Slider["2e"].MouseEnter:Connect(function()
-						if Slider.BarHover then return end
-						ToolTipActivate(Text)
-					end)
-
-					Slider["2e"].MouseLeave:Connect(function()
-						ToolTipDeactivate()
-					end)
-				end
-
-				return Slider
-			end
-
-			function Section:Dropdown(Name, Data, Callback)
-				Name = Name or "Unnamed"
-				Data = Data or {}
-				Callback = Callback or function() end
-
-				local Dropdown = {
-					IconHover = false,
-					Enabled = false,
-					CurrentItem = nil,
-					Tag = "Dropdown"
-				}
-
-				do
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown
-					Dropdown["3a"] = Instance.new("Frame", Section["1d"]);
-					Dropdown["3a"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Dropdown["3a"]["Size"] = UDim2.new(0, 229, 0, 30);
-					Dropdown["3a"]["ClipsDescendants"] = true;
-					Dropdown["3a"]["Position"] = UDim2.new(0, 0, 0.40569886565208435, 0);
-					Dropdown["3a"]["Name"] = Name;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.Dropdown
-					Dropdown["3b"] = Instance.new("TextLabel", Dropdown["3a"]);
-					Dropdown["3b"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
-					Dropdown["3b"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Dropdown["3b"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Dropdown["3b"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Dropdown["3b"]["TextTransparency"] = 0.18000000715255737;
-					Dropdown["3b"]["TextSize"] = 12;
-					Dropdown["3b"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Dropdown["3b"]["Size"] = UDim2.new(0, 165, 0, 20);
-					Dropdown["3b"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Dropdown["3b"]["Text"] = Name;
-					Dropdown["3b"]["Name"] = [[Dropdown]];
-					Dropdown["3b"]["BackgroundTransparency"] = 0.5;
-					Dropdown["3b"]["Position"] = UDim2.new(0.8460000157356262, -180, 0, 5);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.Dropdown.UICorner
-					Dropdown["3c"] = Instance.new("UICorner", Dropdown["3b"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.Icon
-					Dropdown["3d"] = Instance.new("ImageLabel", Dropdown["3a"]);
-					Dropdown["3d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Dropdown["3d"]["Image"] = [[rbxassetid://10709768538]];
-					Dropdown["3d"]["Size"] = UDim2.new(1, -206, 1, -10);
-					Dropdown["3d"]["Name"] = [[Icon]];
-					Dropdown["3d"]["BackgroundTransparency"] = 1;
-					Dropdown["3d"]["Position"] = UDim2.new(0.8460000157356262, 0, 0, 5);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.Icon.UICorner
-					Dropdown["3e"] = Instance.new("UICorner", Dropdown["3d"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.Icon.UIAspectRatioConstraint
-					Dropdown["3f"] = Instance.new("UIAspectRatioConstraint", Dropdown["3d"]);
-					Dropdown["3f"]["AspectRatio"] = 1.0136394500732422;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.UICorner
-					Dropdown["40"] = Instance.new("UICorner", Dropdown["3a"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.UIStroke
-					Dropdown["41"] = Instance.new("UIStroke", Dropdown["3a"]);
-					Dropdown["41"]["Color"] = Color3.fromRGB(130, 130, 130);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.OptionHolder
-					Dropdown["42"] = Instance.new("ScrollingFrame", Dropdown["3a"]);
-					Dropdown["42"]["Active"] = true;
-					Dropdown["42"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Dropdown["42"]["BackgroundTransparency"] = 1;
-					Dropdown["42"]["Size"] = UDim2.new(1, 0, 0, 100);
-					Dropdown["42"]["BorderColor3"] = Color3.fromRGB(70, 70, 70);
-					Dropdown["42"]["ScrollBarThickness"] = 3;
-					Dropdown["42"]["Position"] = UDim2.new(0, 0, 0, 30);
-					Dropdown["42"]["Name"] = [[OptionHolder]];
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.OptionHolder.UICorner
-					Dropdown["43"] = Instance.new("UICorner", Dropdown["42"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.OptionHolder.UIListLayout
-					Dropdown["44"] = Instance.new("UIListLayout", Dropdown["42"]);
-					Dropdown["44"]["Padding"] = UDim.new(0, 5);
-					Dropdown["44"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Dropdown.OptionHolder.UIPadding
-					Dropdown["46"] = Instance.new("UIPadding", Dropdown["42"]);
-					Dropdown["46"]["PaddingLeft"] = UDim.new(0, 10);
-					Dropdown["46"]["PaddingTop"] = UDim.new(0, 5)
-
-				end
-				local ExpandedSize = UDim2.new(0, 229, 0, 100);
-				local NormalSize = UDim2.new(0, 229, 0, 30);
-
-				Dropdown["44"]:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-					Dropdown["42"].CanvasSize = UDim2.new(0, 0, 0, Dropdown["44"].AbsoluteContentSize.Y)
-				end)
-
-				Dropdown["3d"].MouseEnter:Connect(function()
-					Library:tween(Dropdown["3d"], {Rotation = 360})
-					Dropdown.IconHover = true
-
-				end)
-				Dropdown["3d"].MouseLeave:Connect(function()
-					Library:tween(Dropdown["3d"], {Rotation = 0})
-					Dropdown.IconHover = false
-				end)
-
-				uis.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 and Dropdown.IconHover then
-						if not Dropdown.Enabled then
-							Dropdown.Enabled = true
-							Dropdown["3a"]:TweenSize(ExpandedSize, Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.25, true)
-						else
-							Dropdown["3a"]:TweenSize(NormalSize, Enum.EasingDirection.InOut, Enum.EasingStyle.Quint, 0.25, true)
-							Dropdown.Enabled = false
-						end
-					end
-				end)
-
-				local CurrentData = {}
-
-				for _, v in ipairs(Data) do
-					if type(v) == "userdata" then
-						CurrentData[v.Name] = v
-					else
-						CurrentData[v] = v
-					end
-				end
-				RandomName = tostring(math.random(30000000))
-				function Dropdown:Setup(Data)
-					for _,val in pairs(Data) do
-						local Label = nil;
-						Label = Instance.new("TextLabel", Dropdown["42"]);
-						Label["BorderSizePixel"] = 0;
-						Label["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-						Label["TextXAlignment"] = Enum.TextXAlignment.Left;
-						Label["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-						Label["TextSize"] = 12;
-						Label["TextColor3"] = Color3.fromRGB(255, 255, 255);
-						Label["Name"] = val;
-						Label["BackgroundTransparency"] = 0;
-						Label["Position"] = UDim2.new(0.02222222276031971, 0, 0.14953075349330902, 0);
-						Label["Size"] = UDim2.new(0, 210, 0, 20)
-						Dropdown["6969"] = Instance.new("UICorner", Label);
-						GUI["696969"] = Instance.new("UIStroke", Label);
-						GUI["696969"]["Color"] = Color3.fromRGB(150, 150, 150);
-						GUI["696969"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-						Label["BackgroundTransparency"] = .7
-						if type(val) == "userdata" then
-							val = val.Name
-						end
-						Label["Text"] = "‎‎‎‎‎‎‎‎ㅤ"..val
-						local InsideDrop = {
-							Hover = false
-						}
-						Label.MouseEnter:Connect(function()
-							Library:tween(Label, {BackgroundColor3 = Color3.fromRGB(150,150,150)})
-							InsideDrop.Hover = true
-						end)
-						Label.MouseLeave:Connect(function()
-							Library:tween(Label, {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-							InsideDrop.Hover = false
-						end)
-						uis.InputBegan:Connect(function(input)
-							if input.UserInputType == Enum.UserInputType.MouseButton1 and InsideDrop.Hover then
-								pcall(Callback, tostring(string.gsub(Label.Text, "‎‎‎‎‎‎‎‎ㅤ", "")))
-								Dropdown["3b"]["Text"] = Name..": " .. Label.Text
-								Dropdown.Enabled = false
-								Dropdown.CurrentItem = Label.Text
-								Dropdown["3a"]:TweenSize(ExpandedSize, Enum.EasingDirection.InOut, Enum.EasingStyle.Sine, 0.5, true)
-							end
-						end)
-					end
-				end
-				function Dropdown:Clear()
-					for _, v in ipairs(Dropdown["42"]:GetChildren()) do
-						if v:IsA("TextLabel") then
-							v:Destroy()
-						end
-					end
-				end
-
-				Dropdown:Setup(CurrentData)
-
-				function Dropdown:Get()
-					return Dropdown.CurrentItem
-				end
-
-				function Dropdown:Set(Value)
-					SetItem = ((CurrentData[Value] ~= nil and CurrentData[Value]) or (table.find(CurrentData, Value) and Value))
-					Dropdown["3b"].Text = Name .. ": " .. tostring(((type(SetItem) == "userdata" and SetItem.Name) or (type(SetItem) == "string" and SetItem)))
-					pcall(Callback, Value)
-				end
-
-				function Dropdown:Update(Data)
-					if type(Data) ~= "table" then
-						Data = {Data}
-					end
-
-					table.clear(CurrentData)
-
-					Dropdown:Clear()
-
-					for _, DataValue in ipairs(Data) do
-						if type(DataValue) == "userdata" then
-							CurrentData[DataValue.Name] = DataValue
-						else
-							CurrentData[DataValue] = DataValue
-						end
-					end
-
-					Dropdown:Setup(CurrentData)
-				end
-				function Dropdown:Tooltip(Text)
-					Dropdown["3b"].MouseEnter:Connect(function()
-						ToolTipActivate(Text)
-					end)
-
-					Dropdown["3b"].MouseLeave:Connect(function()
-						ToolTipDeactivate()
-					end)
-				end
-				return Dropdown
-			end
-
-			function Section:Box(Name, Default, Callback)
-				Name = Name or "Unnamed"
-				Default = Default or ""
-				Callback = Callback or function() end
-
-				local Box = {
-					Tag = "Box"
-				}
-
-				do
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box
-					Box["58"] = Instance.new("Frame", Section["1d"]);
-					Box["58"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Box["58"]["Size"] = UDim2.new(1, 0, 0, 51);
-					Box["58"]["Name"] = [[Box]];
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.Box
-					Box["59"] = Instance.new("TextLabel", Box["58"]);
-					Box["59"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
-					Box["59"]["BackgroundColor3"] = Color3.fromRGB(88, 88, 88);
-					Box["59"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Box["59"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Box["59"]["TextTransparency"] = 0.18000000715255737;
-					Box["59"]["TextSize"] = 12;
-					Box["59"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Box["59"]["Size"] = UDim2.new(1, 130, 1, -30);
-					Box["59"]["BorderColor3"] = Color3.fromRGB(28, 43, 54);
-					Box["59"]["Text"] = Name;
-					Box["59"]["Name"] = [[Box]];
-					Box["59"]["BackgroundTransparency"] = 0.5;
-					Box["59"]["Position"] = UDim2.new(0, 10, 0, 4);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.Box.UICorner
-					Box["5a"] = Instance.new("UICorner", Box["59"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.Box.UIAspectRatioConstraint
-					Box["5b"] = Instance.new("UIAspectRatioConstraint", Box["59"]);
-					Box["5b"]["AspectRatio"] = 15.025296211242676;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.UICorner
-					Box["5c"] = Instance.new("UICorner", Box["58"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.UIStroke
-					Box["5d"] = Instance.new("UIStroke", Box["58"]);
-					Box["5d"]["Color"] = Color3.fromRGB(130, 130, 130);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack
-					Box["5e"] = Instance.new("Frame", Box["58"]);
-					Box["5e"]["BorderSizePixel"] = 0;
-					Box["5e"]["BackgroundColor3"] = Color3.fromRGB(61, 61, 61);
-					Box["5e"]["Size"] = UDim2.new(1, -10, 0, 25);
-					Box["5e"]["Position"] = UDim2.new(1, -225, 1, -30);
-					Box["5e"]["Name"] = [[BoxBack]];
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.UICorner
-					Box["5f"] = Instance.new("UICorner", Box["5e"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.UIStroke
-					Box["60"] = Instance.new("UIStroke", Box["5e"]);
-					Box["60"]["Color"] = Color3.fromRGB(157, 157, 157);
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText
-					Box["61"] = Instance.new("TextBox", Box["5e"]);
-					Box["61"]["TextSize"] = 14;
-					Box["61"]["TextXAlignment"] = Enum.TextXAlignment.Left;
-					Box["61"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-					Box["61"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-					Box["61"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-					Box["61"]["BackgroundTransparency"] = 1;
-					Box["61"]["Size"] = UDim2.new(1, -8, 1, 0);
-					Box["61"]["Text"] = Default;
-					Box["61"]["Position"] = UDim2.new(0, 10, 0, 0);
-					Box["61"]["Name"] = [[BoxText]];
-					Box["61"]["ClearTextOnFocus"] = false;
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText.UICorner
-					Box["62"] = Instance.new("UICorner", Box["61"]);
-
-
-					-- StarterGui.My Library.Main.ContentContainer.MainTab.Container.LeftSide.Section1.Contents.Box.BoxBack.BoxText.UIAspectRatioConstraint
-					Box["63"] = Instance.new("UIAspectRatioConstraint", Box["61"]);
-					Box["63"]["AspectRatio"] = 7.781999588012695;
-				end
-
-				Box["58"].MouseEnter:Connect(function()
-					Library:tween(Box["58"], {["BackgroundColor3"] = Color3.fromRGB(160,160,160)})
-				end)
-
-				Box["58"].MouseLeave:Connect(function()
-					Library:tween(Box["58"], {BackgroundColor3 = Color3.fromRGB(88, 88, 88)})
-				end)
-
-				Box["61"].FocusLost:Connect(function(EP)
-					if EP then
-						pcall(Callback, Box["61"].Text)
-						Box["61"].Text = ""
-					end
-				end)
-
-				function Box:Set(Value)
-					Box["61"].Text = Value
-					pcall(Callback, Box["61"].Text)
-				end
-				return Box
-			end
-
-			return Section
-		end
-		return Tab
-	end
-	return GUI
+do -- Nexus
+    local BTN_CLICK = 'ButtonClicked:'
+
+    Nexus.Connected = Signal.new()
+    Nexus.Disconnected = Signal.new()
+    Nexus.MessageReceived = Signal.new()
+
+    Nexus.Commands = {}
+    Nexus.Connections = {}
+
+    Nexus.ShutdownTime = 45
+    Nexus.ShutdownOnTeleportError = true
+
+    function Nexus:Send(Command, Payload)
+        assert(self.Socket ~= nil, 'websocket is nil')
+        assert(self.IsConnected, 'websocket not connected')
+        assert(typeof(Command) == 'string', 'Command must be a string, got ' .. typeof(Command))
+
+        if Payload then
+            assert(typeof(Payload) == 'table', 'Payload must be a table, got ' .. typeof(Payload))
+        end
+
+        local Message = HttpService:JSONEncode {
+            Name = Command,
+            Payload = Payload
+        }
+
+        self.Socket:Send(Message)
+    end
+
+    function Nexus:SetAutoRelaunch(Enabled)
+        self:Send('SetAutoRelaunch', { Content = Enabled and 'true' or 'false' })
+    end
+    
+    function Nexus:SetPlaceId(PlaceId)
+        self:Send('SetPlaceId', { Content = PlaceId })
+    end
+    
+    function Nexus:SetJobId(JobId)
+        self:Send('SetJobId', { Content = JobId })
+    end
+
+    function Nexus:Echo(Message)
+        self:Send('Echo', { Content = Message })
+    end
+
+    function Nexus:Log(...)
+        local T = {}
+
+        for Index, Value in pairs{ ... } do
+            table.insert(T, tostring(Value))
+        end
+
+        self:Send('Log', {
+            Content = table.concat(T, ' ')
+        })
+    end
+
+    function Nexus:CreateElement(ElementType, Name, Content, Size, Margins, Table)
+        assert(typeof(Name) == 'string', 'string expected on argument #1, got ' .. typeof(Name))
+        assert(typeof(Content) == 'string', 'string expected on argument #2, got ' .. typeof(Content))
+
+        assert(Name:find'%W' == nil, 'argument #1 cannot contain whitespace')
+
+        if Size then assert(typeof(Size) == 'table' and #Size == 2, 'table with 2 arguments expected on argument #3, got ' .. typeof(Size)) end
+        if Margins then assert(typeof(Margins) == 'table' and #Margins == 4, 'table with 4 arguments expected on argument #4, got ' .. typeof(Margins)) end
+        
+        local Payload = {
+            Name = Name,
+            Content = Content,
+            Size = Size and table.concat(Size, ','),
+            Margin = Margins and table.concat(Margins, ',')
+        }
+
+        if Table then
+            for Index, Value in pairs(Table) do
+                Payload[Index] = Value
+            end
+        end
+
+        self:Send(ElementType, Payload)
+    end
+
+    function Nexus:CreateButton(...)
+        return self:CreateElement('CreateButton', ...)
+    end
+
+    function Nexus:CreateTextBox(...)
+        return self:CreateElement('CreateTextBox', ...)
+    end
+
+    function Nexus:CreateNumeric(Name, Value, DecimalPlaces, Increment, Size, Margins)
+        return self:CreateElement('CreateNumeric', Name, tostring(Value), Size, Margins, { DecimalPlaces = DecimalPlaces, Increment = Increment })
+    end
+
+    function Nexus:CreateLabel(...)
+        return self:CreateElement('CreateLabel', ...)
+    end
+
+    function Nexus:NewLine(...)
+        return self:Send('NewLine')
+    end
+
+    function Nexus:GetText(Name)
+        return self:WaitForMessage('ElementText:', 'GetText', { Name = Name })
+    end
+
+    function Nexus:SetRelaunch(Seconds)
+        self:Send('SetRelaunch', { Seconds = Seconds })
+    end
+
+    function Nexus:WaitForMessage(Header, Message, Payload)
+        if Message then
+            task.defer(self.Send, self, Message, Payload)
+        end
+
+        local Message
+
+        while true do
+            Message = self.MessageReceived:Wait()
+
+            if Message:sub(1, #Header) == Header then
+                break
+            end
+        end
+
+        return Message:sub(#Header + 1)
+    end
+
+    function Nexus:Connect(Host)
+        while true do
+            for Index, Connection in pairs(self.Connections) do
+                Connection:Disconnect()
+            end
+        
+            table.clear(self.Connections)
+
+            if self.IsConnected then
+                self.IsConnected = false
+                self.Socket = nil
+                self.Disconnected:Fire()
+            end
+
+            if self.Terminated then break end
+
+            if not Host then
+                Host = 'localhost:5242'
+            end
+
+            local Success, Socket = pcall(WSConnect, ('ws://%s/Nexus?name=%s&id=%s&jobId=%s'):format(Host, LocalPlayer.Name, LocalPlayer.UserId, game.JobId))
+
+            if not Success then task.wait(12) continue end
+
+            self.Socket = Socket
+            self.IsConnected = true
+
+            table.insert(self.Connections, Socket.DataReceived:Connect(function(Message)
+                self.MessageReceived:Fire(Message)
+            end))
+
+            table.insert(self.Connections, Socket.ConnectionClosed:Connect(function()
+                self.IsConnected = false
+                self.Disconnected:Fire()
+            end))
+
+            self.Connected:Fire()
+
+            while self.IsConnected do
+                local Success, Error = pcall(self.Send, self, 'ping')
+
+                if not Success or self.Terminated then
+                    break
+                end
+
+                task.wait(1)
+            end
+        end
+    end
+
+    function Nexus:Stop()
+        self.IsConnected = false
+        self.Terminated = true
+        self.Disconnected:Fire()
+
+        if self.Socket then
+            pcall(function() self.Socket:Close() end)
+        end
+    end
+
+    function Nexus:AddCommand(Name, Function)
+        self.Commands[Name] = Function
+    end
+
+    function Nexus:RemoveCommand(Name)
+        self.Commands[Name] = nil
+    end
+
+    function Nexus:OnButtonClick(Name, Function)
+        self:AddCommand('ButtonClicked:' .. Name, Function)
+    end
+
+    Nexus.MessageReceived:Connect(function(Message)
+        local S = Message:find(' ')
+
+        if S then
+            local Command, Message = Message:sub(1, S - 1):lower(), Message:sub(S + 1)
+
+            if Nexus.Commands[Command] then
+                local Success, Error = pcall(Nexus.Commands[Command], Message)
+
+                if not Success and Error then
+                    Nexus:Log(('Error with command `%s`: %s'):format(Command, Error))
+                end
+            end
+        elseif Nexus.Commands[Message] then
+            local Success, Error = pcall(Nexus.Commands[Message], Message)
+
+            if not Success and Error then
+                Nexus:Log(('Error with command `%s`: %s'):format(Message, Error))
+            end
+        end
+    end)
 end
 
-return Library
+do -- Default Commands
+    Nexus:AddCommand('execute', function(Message)
+        local Function, Error = loadstring(Message)
+        
+        if Function then
+            local Env = getfenv(Function)
+            
+            Env.Player = LocalPlayer
+            Env.print = function(...)
+                local T = {}
+
+                for Index, Value in pairs{ ... } do
+                    table.insert(T, tostring(Value))
+                end
+
+                Nexus:Log(table.concat(T, ' '))
+            end
+
+            local S, E = pcall(Function)
+
+            if not S then
+                Nexus:Log(E)
+            end
+        else
+            Nexus:Log(Error)
+        end
+    end)
+
+    Nexus:AddCommand('teleport', function(Message)
+        local S = Message:find(' ')
+        local PlaceId, JobId = S and Message:sub(1, S - 1) or Message, S and Message:sub(S + 1)
+        
+        if JobId then
+            TeleportService:TeleportToPlaceInstance(tonumber(PlaceId), JobId)
+        else
+            TeleportService:Teleport(tonumber(PlaceId))
+        end
+    end)
+
+    Nexus:AddCommand('rejoin', function(Message)
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
+    end)
+
+    Nexus:AddCommand('mute', function()
+        if (UGS.MasterVolume - OldVolume) > 0.01 then
+            OldVolume = UGS.MasterVolume
+        end
+
+        UGS.MasterVolume = 0
+    end)
+
+    Nexus:AddCommand('unmute', function()
+        UGS.MasterVolume = OldVolume
+    end)
+
+    Nexus:AddCommand('performance', function(Message)
+        if _PERF then return end
+        
+        _PERF = true
+        _TARGETFPS = 8
+
+        if Message and tonumber(Message) then
+            _TARGETFPS = tonumber(Message)
+        end
+
+        local OldLevel = settings().Rendering.QualityLevel
+
+        RunService:Set3dRenderingEnabled(false)
+        settings().Rendering.QualityLevel = 1
+
+        InputService.WindowFocused:Connect(function()
+            RunService:Set3dRenderingEnabled(true)
+            settings().Rendering.QualityLevel = OldLevel
+            setfpscap(60)
+        end)
+
+        InputService.WindowFocusReleased:Connect(function()
+            OldLevel = settings().Rendering.QualityLevel
+
+            RunService:Set3dRenderingEnabled(false)
+            settings().Rendering.QualityLevel = 1
+            setfpscap(_TARGETFPS)
+        end)
+
+        setfpscap(_TARGETFPS)
+    end)
+end
+
+do -- Connections
+    GuiService.ErrorMessageChanged:Connect(function()
+        if NoShutdown then return end
+
+        local Code = GuiService:GetErrorCode().Value
+
+        if Code >= Enum.ConnectionError.DisconnectErrors.Value then
+            if not Nexus.ShutdownOnTeleportError and Code > Enum.ConnectionError.PlacelaunchOtherError.Value then
+                return
+            end
+            
+            task.delay(Nexus.ShutdownTime, game.Shutdown, game)
+        end
+    end)
+end
+
+local GEnv = getgenv()
+GEnv.Nexus = Nexus
+GEnv.performance = Nexus.Commands.performance -- fix the sirmeme error so that people stop being annoying saying "omg performance() doesnt work" (https://youtu.be/vVfg9ym2MNs?t=389)
+
+if not Nexus_Version then
+    Nexus:Connect()
+    Nexus.Connected:Wait()
+end
