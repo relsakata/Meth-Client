@@ -188,7 +188,7 @@ do -- Nexus
 
         local Message
 
-        while true do
+        while true do task.wait()
             Message = self.MessageReceived:Wait()
 
             if Message:sub(1, #Header) == Header then
@@ -200,7 +200,7 @@ do -- Nexus
     end
 
     function Nexus:Connect(Host)
-        while true do
+        while true do task.wait()
             for Index, Connection in pairs(self.Connections) do
                 Connection:Disconnect()
             end
@@ -237,7 +237,7 @@ do -- Nexus
 
             self.Connected:Fire()
 
-            while self.IsConnected do
+            while self.IsConnected do task.wait()
                 local Success, Error = pcall(self.Send, self, 'ping')
 
                 if not Success or self.Terminated then
